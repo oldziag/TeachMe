@@ -5,7 +5,7 @@ import ImageViewer from '@/components/ImageViewer';
 import ButtonComponent from '@/components/Buttons';
 
 
-const PlaceholderImage = require('assets/images/462577760_602287518959586_1789329821719258931_n.jpg');
+const PlaceholderImage = require('assets/images/logoteachme.png');
 
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
