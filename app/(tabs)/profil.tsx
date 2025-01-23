@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Button from '@/components/Buttons';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { useRouter } from 'expo-router'; 
-import { SignOut } from '../../lib/appwrite'; 
+import { signOut } from '../../lib/appwrite'; 
 
 const Profile = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
@@ -11,7 +11,7 @@ const Profile = () => {
 
   const logout = async () => {
     try {
-      await SignOut(); 
+      await signOut(); 
       setUser(null); 
       setIsLogged(false); 
       router.replace("/sign-in"); 

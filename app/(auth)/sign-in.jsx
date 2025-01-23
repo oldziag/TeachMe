@@ -8,6 +8,9 @@ import ButtonComponent from '@/components/Buttons';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { getCurrentUser, signIn } from "../../lib/appwrite";
 import { checkActiveSession } from '../../lib/appwrite'; 
+
+
+
 const SignIn = () => {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState(''); 
@@ -18,6 +21,7 @@ const SignIn = () => {
   useEffect(() => {
       checkActiveSession(router); 
     }, []);
+
 
 
   const submit = async () => {
@@ -37,6 +41,7 @@ const SignIn = () => {
       setSubmitting(false);
     }
   };
+
 
 
 
@@ -105,6 +110,7 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
 
 const styles = StyleSheet.create({
   container: {

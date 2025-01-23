@@ -3,11 +3,12 @@ import{Stack}from 'expo-router';
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { useGlobalContext } from "../../context/GlobalProvider";
-
-const AuthLayout = () => {
+import { Redirect, router } from "expo-router"; 
+const logowanie = () => {
   const { loading, isLogged } = useGlobalContext();
-
-  if (isLogged) return <Redirect href="/home" />;
+  if ( isLogged) return <Redirect href="/home" />;}
+const AuthLayout = () => {
+ 
 
   return (
     <>
@@ -18,6 +19,7 @@ const AuthLayout = () => {
         headerShown:false,
         animation: 'fade'
       }}/>
+
       <Stack.Screen
       name='sign-up'
       options={{
@@ -32,5 +34,4 @@ const AuthLayout = () => {
 }
 
 export default AuthLayout
-
 const styles = StyleSheet.create({})

@@ -61,6 +61,13 @@ export default function RootLayout() {
             animation: 'fade'
           }}
         />
+         <Stack.Screen
+          name="create_ad"
+          options={{
+            headerShown: false,
+            animation: 'fade'
+          }}
+        />
         <Stack.Screen
           name="+not-found"
           options={{

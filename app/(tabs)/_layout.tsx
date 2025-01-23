@@ -6,7 +6,7 @@ import { useFonts} from 'expo-font';
 import { StatusBar } from 'expo-status-bar'; 
 import Button from '@/components/Buttons';
 
-export default function UkładZakładek() {
+export default function TabsLayOut() {
 
   return (
     <View style={{ flex: 1 }}>
