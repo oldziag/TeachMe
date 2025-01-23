@@ -18,7 +18,7 @@ export default function UkładZakładek() {
               screenOptions={{
                 tabBarActiveTintColor: "#000000",
                 tabBarInactiveTintColor: "#4A4A4A",
-                tabBarActiveBackgroundColor: "#808b96",
+                tabBarActiveBackgroundColor: "#1c9e92",
                 headerShadowVisible: false,
                 headerTintColor: "#000000",
                 headerStyle: {
@@ -28,7 +28,7 @@ export default function UkładZakładek() {
               
                 tabBarPosition: "bottom",
                 tabBarStyle: {
-                  backgroundColor: "#C7C4CC",
+                  backgroundColor: "#1c9e92",
 
                 },
               }}
@@ -36,6 +36,7 @@ export default function UkładZakładek() {
               <Tabs.Screen
                 name="home"
                 options={{
+                  headerShown:false,
                   tabBarLabel: "Home",
                   headerTitle: "Home",
                   tabBarIcon: ({ focused, color }) => (
