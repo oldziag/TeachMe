@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link,useRouter,Router } from 'expo-router'; 
+import { Link,useRouter,router } from 'expo-router'; 
 import { Ionicons } from '@expo/vector-icons'; 
 import { useNavigation } from '@react-navigation/native'; 
 import ButtonComponent from '@/components/Buttons';
@@ -31,8 +31,8 @@ const SignIn = () => {
     setSubmitting(true);
     try {
       await signIn(email, password);
-      const result=await getCurrentUser();
-      setUser(result);
+      const user=await getCurrentUser();
+      setUser(user);
       setIsLogged(true);
       router.replace("/home");
     } catch (error) {
@@ -89,7 +89,7 @@ const SignIn = () => {
               />
             </TouchableOpacity>    
           </View>
-          <View style={{alignItems:'center',marginBottom:'20',left:-13,marginTop:50}}>
+          <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 35 }}>
               <ButtonComponent
                 theme="start"
                 label="Sign in"
@@ -116,13 +116,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     justifyContent: 'center',
+    alignItems:'center',
     height: '100%',
     padding: 20,
   },
   logo: {
     width: 190,
     height: 40,
-    marginLeft: 20,
+    marginLeft: 10,
     marginTop: 20,
   },
   title: {
@@ -137,7 +138,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
     fontWeight: '200',
-    marginLeft: 25,
     marginTop: 20,
   },
   input: {
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 15,
     paddingHorizontal: 10,
-    marginLeft: 15,
     marginTop: 10,
     fontSize: 18,
   },
@@ -158,8 +157,8 @@ const styles = StyleSheet.create({
 
   iconContainer: {
     position: 'absolute',
-    right: 0,
-    top: 20,
+    top: 22,
+    right:10,
   },
 });
 

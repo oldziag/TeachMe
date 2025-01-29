@@ -10,11 +10,11 @@ import { Link, router } from "expo-router";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
-  const [isSubmitting, setSubmitting] = useState(false);
   const [email, setEmail] = useState(''); 
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState(''); 
   const [showPassword, setShowPassword] = useState(false); 
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const submit = async () => {
     if (username === " " || email === " " || password === " ") {
@@ -23,8 +23,8 @@ const SignUp = () => {
     }
     setSubmitting(true);
     try {
-      const result = await createUser(email, password, username);
-      setUser(result);
+      const user = await createUser(email, password, username);
+      setUser(user);
       setIsLogged(true);
       router.replace("/home");
     } 
@@ -79,7 +79,7 @@ const SignUp = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={{ alignItems: 'center', marginBottom: 20, left: -13, marginTop: 35 }}>
+          <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 35 }}>
             <ButtonComponent
               theme="start"
               label="Sign up"
@@ -105,13 +105,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     justifyContent: 'center',
+    alignItems:'center',
     height: '100%',
     padding: 20,
   },
   logo: {
     width: 190,
     height: 40,
-    marginLeft: 20,
+    marginLeft: 10,
     marginTop: 20,
   },
   title: {
@@ -126,7 +127,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 17,
     fontWeight: '200',
-    marginLeft: 25,
     marginTop: 20,
   },
   input: {
@@ -135,13 +135,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 15,
     paddingHorizontal: 10,
-    marginLeft: 15,
     marginTop: 10,
     fontSize: 18,
   },
   iconContainer: {
     position: 'absolute',
-    right: 0,
-    top: 20,
+    top: 22,
+    right:10,
   },
 });
