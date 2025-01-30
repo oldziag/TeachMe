@@ -1,8 +1,8 @@
-import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback,ScrollView } from 'react-native';
+import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ButtonComponent from '@/components/Buttons';
 import { getAds, getUsername, getCurrentUser } from 'lib/appwrite';
-import { Link,useRouter,router } from 'expo-router'; 
+import { router } from 'expo-router';
 
 export default function Home() {
   const [announcements, setAnnouncements] = useState<any[]>([]);
@@ -10,8 +10,8 @@ export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
   const [usernames, setUsernames] = useState<any>({});
   const [currentScreen, setCurrentScreen] = useState<'home' | 'recents' | 'AdView'>('home');
-  const [selectedAd, setSelectedAd] = useState<any | null>(null); 
-
+  const [selectedAd, setSelectedAd] = useState<any | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -64,7 +64,6 @@ export default function Home() {
     fetchUsernames();
   }, [announcements]);
 
-
   if (loading) {
     return (
       <View style={styles.container}>
@@ -73,12 +72,30 @@ export default function Home() {
     );
   }
 
-
   if (currentScreen === 'home') {
     return (
-    
       <View style={styles.container}>
         <TextInput style={styles.input} placeholder="Search" placeholderTextColor="gray" />
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
+          {[
+            { name: 'Matematyka', image: require('assets/images/matematyka.png') },
+            { name: 'Biologia', image: require('assets/images/biology.png') },
+            { name: 'Fizyka', image: require('assets/images/fizyka.png') },
+            { name: 'Informatyka', image: require('assets/images/informatyka.png') },
+            { name: 'Chemia', image: require('assets/images/chemia.png') },
+          ].map((category, index) => (
+            <TouchableWithoutFeedback key={index} onPress={() => {
+              setSelectedCategory(category.name);
+              setCurrentScreen('recents');
+            }}>
+              <View style={styles.categoryItem}>
+                <Image source={category.image} style={styles.image} />
+                <Text style={styles.categoryText}>{category.name}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          ))}
+        </ScrollView>
+
         <Text style={styles.text2}>
           Start now and connect with people who share your passion for{' '}
           <Text style={{ color: '#1c9e92', fontWeight: '600' }}>learning!</Text>
@@ -87,28 +104,12 @@ export default function Home() {
         <View style={styles.container2}>
           <ButtonComponent theme="start" label="Add your advertisement" onPress={() => router.replace("/create_ad")} />
         </View>
-
-        <Text style={{ ...styles.text2, paddingTop: 7 }}> Or </Text>
-
-        <Text
-          onPress={() => setCurrentScreen('recents')}
-          style={{
-            ...styles.text2,
-            paddingBottom: 30,
-            color: '#1c9e92',
-            fontWeight: '400',
-            paddingTop: 20,
-          }}>
-          See recents
-        </Text>
       </View>
     );
   }
 
-
   if (currentScreen === 'recents') {
     return (
-     
       <View style={styles.container}>
         <Text
           onPress={() => setCurrentScreen('home')}
@@ -121,13 +122,17 @@ export default function Home() {
           Back
         </Text>
 
+        <Text style={{ color: 'white', fontSize: 24, paddingBottom: 10 }}>
+          {selectedCategory ? `Ogłoszenia dla: ${selectedCategory}` : 'Wszystkie ogłoszenia'}
+        </Text>
+
         <FlatList
-          data={announcements}
+          data={announcements.filter(item => !selectedCategory || item.category === selectedCategory)}
           keyExtractor={(item) => item.$id}
           renderItem={({ item }) => (
             <TouchableWithoutFeedback
               onPress={() => {
-                setSelectedAd(item); 
+                setSelectedAd(item);
                 setCurrentScreen('AdView');
               }}>
               <View style={styles.adCard}>
@@ -138,33 +143,34 @@ export default function Home() {
           )}
         />
       </View>
-  
     );
   }
 
-
   if (currentScreen === 'AdView' && selectedAd) {
     return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text
-          onPress={() => setCurrentScreen('recents')} 
-          style={{
-            color: '#1c9e92',
-            fontSize: 30,
-            paddingBottom: 20,
-            fontWeight: '600',
-          }}> Back </Text>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text
+            onPress={() => setCurrentScreen('recents')}
+            style={{
+              color: '#1c9e92',
+              fontSize: 30,
+              paddingBottom: 20,
+              fontWeight: '600',
+            }}> Back </Text>
 
-        <View style={styles.adCard2}>
-          <Text style={{fontSize: 30, padding:15, textAlign: 'center', fontWeight: '500' }}>{selectedAd.title}</Text>  
-          <Text style={{ fontSize: 24, fontWeight: '400', textAlign: 'center'}}>{selectedAd.description}</Text>
-          <Text style={{ fontSize: 24, fontWeight: '800', textAlign: 'center',paddingTop:50}}>Category:{"\n"} </Text><Text style={{textAlign:'center',paddingBottom:15,fontSize:22}}>{selectedAd.category}</Text>
-          <Text style={{ fontSize: 24, fontWeight: '800', textAlign: 'center' }}>Price:{"\n"} </Text><Text style={{textAlign:'center',paddingBottom:15,fontSize:22}} >{selectedAd.price}</Text>
-          <Text style={{ fontSize: 24,padding:15, textAlign: 'center', fontWeight:'800'}}>Ad's creator:{"\n"}</Text><Text style={{textAlign:'center',paddingBottom:15,fontSize:22}}> {usernames[selectedAd.userId] || 'Loading username...'}</Text>
-          <Text style={{ fontSize: 24,padding:15, textAlign: 'center',fontWeight:'800' }}>Date of adding: {"\n"}</Text> <Text style={{ textAlign:'center',paddingBottom:15,fontSize:22}}>{new Date(selectedAd.date).toLocaleDateString()}</Text>
+          <View style={styles.adCard2}>
+            <Text style={{ fontSize: 30, padding: 15, textAlign: 'center', fontWeight: '500' }}>{selectedAd.title}</Text>
+            <Text style={{ fontSize: 24, fontWeight: '400', textAlign: 'center' }}>{selectedAd.description}</Text>
+            <Text style={{ fontSize: 24, fontWeight: '800', textAlign: 'center', paddingTop: 50 }}>Category:{"\n"} </Text>
+            
+            <Text style={{ textAlign: 'center', paddingBottom: 15, fontSize: 22 }}>{selectedAd.category}</Text>
+            <Text style={{ fontSize: 24, fontWeight: '800', textAlign: 'center', paddingTop: 50 }}>Price:{"\n"} </Text>
+            <Text style={{ textAlign: 'center', paddingBottom: 15, fontSize: 22 }}>{selectedAd.price}</Text>
+            <Text style={{ fontSize: 24, fontWeight: '800', textAlign: 'center', paddingTop: 50 }}>Date:{"\n"} </Text>
+            <Text style={{ textAlign: 'center', paddingBottom: 15, fontSize: 22 }}>{new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+          </View>
         </View>
-      </View>
       </ScrollView>
     );
   }
@@ -181,11 +187,12 @@ const styles = StyleSheet.create({
     paddingTop: 90,
   },
   container2: {
-    marginTop: '5%',
+    
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 40,
+
+    top:-90,
   },
   input: {
     backgroundColor: 'white',
@@ -200,14 +207,40 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textAlign: 'center',
-    marginBottom: -40,
-    paddingTop: 30,
+  },
+  imageScroll: {
+    width: '100%',
+    flexDirection: 'row',
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  categoryItem: {
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  image:{
+
+    left:0,
+    width:130,
+    height:130,
+    borderRadius:100,
+    borderWidth:3,
+    borderColor:'white',
+    margin:10,
   },
   text2: {
     color: 'white',
     fontSize: 24,
     textAlign: 'center',
-    paddingTop: 50,
+    position:'absolute',
+    top:450,
+    
+  },
+  categoryText: {
+    color: 'white',
+    fontSize: 16,
+    marginTop: 5,
+    textAlign: 'center',
   },
   adCard: {
     backgroundColor: '#fff',

@@ -14,7 +14,7 @@ export default function CreateAd() {
   const [open, setOpen] = useState(false); 
   const [items, setItems] = useState([
 
-    { label: 'Programming', value: 'Programowanie' },
+    { label: 'Programming', value: 'Informatyka' },
     { label: 'Math ', value: 'Matematyka' },
     { label: 'Chemistry', value: 'Chemia' },
     { label: 'English', value: 'J. Angielski' },
