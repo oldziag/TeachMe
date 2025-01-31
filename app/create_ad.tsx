@@ -14,13 +14,13 @@ export default function CreateAd() {
   const [open, setOpen] = useState(false); 
   const [items, setItems] = useState([
 
-    { label: 'Programming', value: 'Informatyka' },
-    { label: 'Math ', value: 'Matematyka' },
-    { label: 'Chemistry', value: 'Chemia' },
-    { label: 'English', value: 'J. Angielski' },
-    { label: 'Spanish', value: 'J. Hiszpański' },
-    { label: 'Physics', value: 'Fizyka' },
-    { label: 'Biology', value: 'Biologia' },
+    { label: 'Informatyka', value: 'Informatyka' },
+    { label: 'Matematyka ', value: 'Matematyka' },
+    { label: 'Chemia', value: 'Chemia' },
+    { label: 'Angielski', value: 'Angielski' },
+    { label: 'Hiszpański', value: 'Hiszpański' },
+    { label: 'Fizyka', value: 'Fizyka' },
+    { label: 'Biologia', value: 'Biologia' },
   ]);
 
   const handleSubmit = async () => {
@@ -57,11 +57,11 @@ export default function CreateAd() {
   return (
 
       <ScrollView style={styles.container}>
-        <Text style={styles.heading}>Create a New Advertisement</Text>
+        <Text style={styles.heading}>Stwórz nowe ogłoszenie</Text>
         
         <TextInput
           style={{...styles.input, height:70}}
-          placeholder="Title"
+          placeholder="Tytuł"
           placeholderTextColor="gray"
           value={title}
           onChangeText={setTitle}
@@ -69,7 +69,7 @@ export default function CreateAd() {
         
         <TextInput
           style={[styles.input, styles.textArea, { height: 270 }]}
-          placeholder="e.g., I am a passionate tutor with 3 years of experience teaching mathematics and programming. I specialize in making complex topics easy to understand, tailoring lessons to your needs. Whether you're struggling with algebra, Python, or exam preparation, I’m here to help you succeed. My lessons are interactive and focus on practical problem-solving to build your confidence and skills. Let's work together to achieve your goals!"
+          placeholder="np. Jestem pasjonatem nauczania z 3-letnim doświadczeniem w nauczaniu matematyki i programowania. Specjalizuję się w upraszczaniu skomplikowanych tematów, dostosowując lekcje do Twoich potrzeb. Niezależnie od tego, czy masz trudności z algebrą, Pythonem czy przygotowaniem do egzaminów, jestem tutaj, aby pomóc Ci odnieść sukces. Moje lekcje są interaktywne i koncentrują się na praktycznym rozwiązywaniu problemów, aby budować Twoją pewność siebie i umiejętności. Pracujmy razem, aby osiągnąć Twoje cele! "
           placeholderTextColor="gray"
           value={description}
           onChangeText={setDescription}
@@ -84,7 +84,7 @@ export default function CreateAd() {
             setOpen={setOpen}
             setValue={setCategory}
             setItems={setItems}
-            placeholder="Select a category..."
+            placeholder="Wybierz kategorię..."
             placeholderStyle={{ color: 'gray', fontSize: 18,  }}  
             containerStyle={styles.pickerContainer}
             style={styles.picker}
@@ -98,7 +98,7 @@ export default function CreateAd() {
         
         <TextInput
           style={styles.input}
-          placeholder="Price per hour"
+          placeholder="Cena za godzinę"
           placeholderTextColor="gray"
           value={price}
           keyboardType="numeric"
@@ -106,8 +106,8 @@ export default function CreateAd() {
         />
         
         <View style={{ paddingTop: 50 }}>
-          <ButtonComponent theme="start" label="Submit" onPress={handleSubmit} />
-          <ButtonComponent theme="start" label="Back" onPress={() => router.push('/home')} />
+          <ButtonComponent theme="start" label="Dodaj" onPress={handleSubmit} />
+          <ButtonComponent theme="start" label="Powrót" onPress={() => router.push('/home')} />
         </View>
       </ScrollView>
 

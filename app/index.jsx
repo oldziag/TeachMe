@@ -1,14 +1,15 @@
-import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ButtonComponent from '@/components/Buttons';
 import { Redirect, router } from "expo-router";
 import { useGlobalContext } from "../context/GlobalProvider";
-
+import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 const logowanie = () => {
-  const { loading, isLogged } = useGlobalContext();
+
   if ( isLogged) return <Redirect href="/home" />;}
+
 
 export default function Index() {
   return (
@@ -30,16 +31,16 @@ export default function Index() {
 
       <View style={styles.textContainer}>
         <Text style={styles.mainText}>
-          Just start taking{"\n"}
-          your{" "}
-          <Text style={styles.highlightText}>notes...</Text>
+          Zacznij pisać{"\n"}
+          swoje{" "}
+          <Text style={styles.highlightText}>notatki...</Text>
         </Text>
       </View>
 
       <View style={styles.buttonContainer}>
         <ButtonComponent 
           theme="start" 
-          label="Continue with Email"  
+          label="Kontynuuj"  
           onPress={() => router.push('/sign-in')}
         />
       </View>
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: '246', 
-    height: '258',  
+    width: '240', 
+    height: '250',  
     borderRadius:150,
     borderWidth:4,
     borderColor:'white',

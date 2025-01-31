@@ -37,7 +37,7 @@ export default function TabsLayOut() {
                 name="home"
                 options={{
                   headerShown:false,
-                  tabBarLabel: "Home",
+                  tabBarLabel: "Strona główna",
                   headerTitle: "Home",
                   tabBarIcon: ({ focused, color }) => (
                     <Ionicons
@@ -51,6 +51,7 @@ export default function TabsLayOut() {
               <Tabs.Screen
                 name="about"
                 options={{
+                 
                   tabBarLabel: "About",
                   headerTitle: "About",
                   tabBarIcon: ({ focused, color }) => (
@@ -69,7 +70,8 @@ export default function TabsLayOut() {
               <Tabs.Screen
                 name="profil"
                 options={{
-                  tabBarLabel: "Profile",
+                  headerShown:false,
+                  tabBarLabel: "Profil",
                   headerTitle: "Profile",
                   tabBarIcon: ({ focused, color }) => (
                     <Ionicons

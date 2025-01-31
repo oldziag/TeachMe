@@ -75,7 +75,7 @@ export default function Home() {
   if (currentScreen === 'home') {
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="Search" placeholderTextColor="gray" />
+        <TextInput style={styles.input} placeholder="Szukaj" placeholderTextColor="gray" />
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
           {[
             { name: 'Matematyka', image: require('assets/images/matematyka.png') },
@@ -97,12 +97,12 @@ export default function Home() {
         </ScrollView>
 
         <Text style={styles.text2}>
-          Start now and connect with people who share your passion for{' '}
-          <Text style={{ color: '#1c9e92', fontWeight: '600' }}>learning!</Text>
+          Zacznij teraz i dziel się swoją pasją do{' '}
+          <Text style={{ color: '#1c9e92', fontWeight: '600' }}>nauki!</Text>
         </Text>
 
         <View style={styles.container2}>
-          <ButtonComponent theme="start" label="Add your advertisement" onPress={() => router.replace("/create_ad")} />
+          <ButtonComponent theme="start" label="Dodaj ogłoszenie" onPress={() => router.replace("/create_ad")} />
         </View>
       </View>
     );
@@ -119,7 +119,7 @@ export default function Home() {
             paddingBottom: 20,
             fontWeight: '600',
           }}>
-          Back
+          Powrót
         </Text>
 
         <Text style={{ color: 'white', fontSize: 24, paddingBottom: 10 }}>

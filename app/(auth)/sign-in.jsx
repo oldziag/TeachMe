@@ -55,7 +55,7 @@ const SignIn = () => {
             style={styles.logo}
           />
          
-          <Text style={styles.title}>Log in to TeachMe</Text>
+          <Text style={styles.title}>Zaloguj się do TeachMe</Text>
 
         
           <Text style={styles.label}>Email</Text>
@@ -68,11 +68,11 @@ const SignIn = () => {
           />
 
   
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Hasło</Text>
           <View>
             <TextInput
               style={[styles.input, styles.input]} 
-              placeholder="Password"
+              placeholder="Hasło"
               placeholderTextColor="gray"
               value={password}
               onChangeText={setPassword}
@@ -92,14 +92,14 @@ const SignIn = () => {
           <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 35 }}>
               <ButtonComponent
                 theme="start"
-                label="Sign in"
+                label="Zaloguj się"
                 onPress={submit}
                 isLoading={isSubmitting}/>
 
             <Text style={{color:'white',fontSize:17,marginTop:20}}>
-              Dont'have an account?{" "}
+              Nie masz konta?{" "}
               <Link href="/sign-up" style={{color:'#1c9e92',fontWeight:'600'}}>
-              Sign up
+              Zarejestruj się
               </Link>
             </Text>
           </View>  

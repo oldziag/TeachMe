@@ -41,11 +41,11 @@ const SignUp = () => {
       <ScrollView>
         <View style={styles.container}>
           <Image source={require('assets/images/logoteachme.png')} style={styles.logo} />
-          <Text style={styles.title}>Sign up to TeachMe</Text>
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.title}>Zarejestruj się do TeachMe</Text>
+          <Text style={styles.label}>Nazwa użytkownika</Text>
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder="Nazwa użytkownika"
             placeholderTextColor="gray"
             value={username}
             onChangeText={setUsername} 
@@ -58,11 +58,11 @@ const SignUp = () => {
             value={email}
             onChangeText={setEmail}
           />
-          <Text style={styles.label}>Password</Text>
+          <Text style={styles.label}>Hasło</Text>
           <View>
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Hasło"
               placeholderTextColor="gray"
               value={password}
               onChangeText={setPassword}
@@ -82,14 +82,14 @@ const SignUp = () => {
           <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 35 }}>
             <ButtonComponent
               theme="start"
-              label="Sign up"
+              label="Zarejestruj się"
               onPress={submit}/>
 
             <Text style={{ color: 'white', fontSize: 17, marginTop: 20 }}>
-              Have an account already?{" "}
+              Masz już konto?{" "}
 
               <Link href="/sign-in" style={{ color: '#1c9e92', fontWeight: '600' }}>
-                Sign in
+               Zaloguj się
               </Link>
               
             </Text>
