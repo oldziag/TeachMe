@@ -52,8 +52,8 @@ export default function TabsLayOut() {
                 name="about"
                 options={{
                  
-                  tabBarLabel: "About",
-                  headerTitle: "About",
+                  tabBarLabel: "Wiadomości",
+                  headerShown:false,
                   tabBarIcon: ({ focused, color }) => (
                     <Ionicons
                       name={

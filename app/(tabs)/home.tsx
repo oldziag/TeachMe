@@ -48,7 +48,7 @@ useEffect(() => {
   };
 
   fetchMessages();
-  const interval = setInterval(fetchMessages, 3000); // Odświeżanie co 3 sekundy
+  const interval = setInterval(fetchMessages, 1000); 
   return () => clearInterval(interval);
 }, [userId, selectedAd?.userId]);
 
