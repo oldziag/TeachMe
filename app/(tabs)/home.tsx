@@ -1,7 +1,7 @@
 import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ButtonComponent from '@/components/Buttons';
-import { getAds, getUsername, getCurrentUser, getAvatar } from 'lib/appwrite'; 
+import { getAds, getUsername, getCurrentUser, getAvatar, Message, getMessages } from 'lib/appwrite'; 
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useGlobalContext } from "../../context/GlobalProvider";
@@ -15,9 +15,11 @@ export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
   const [usernames, setUsernames] = useState<Usernames>({});
   const [avatar, setAvatars] = useState<Avatars>({});
-  const [currentScreen, setCurrentScreen] = useState<'home' | 'recents' | 'AdView'>('home');
+  const [currentScreen, setCurrentScreen] = useState<'home' | 'recents' | 'AdView'|'kontakt'>('home');
   const [selectedAd, setSelectedAd] = useState<any | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,6 +32,25 @@ export default function Home() {
     };
     fetchUserData();
   }, []);
+
+
+
+useEffect(() => {
+  const fetchMessages = async () => {
+    if (userId && selectedAd?.userId) {
+      try {
+        const msgs = await getMessages(userId, selectedAd.userId);
+        setMessages(msgs);
+      } catch (error) {
+        console.error("Błąd pobierania wiadomości:", error);
+      }
+    }
+  };
+
+  fetchMessages();
+  const interval = setInterval(fetchMessages, 3000); // Odświeżanie co 3 sekundy
+  return () => clearInterval(interval);
+}, [userId, selectedAd?.userId]);
 
   useEffect(() => {
     const fetchAdsData = async () => {
@@ -58,6 +79,23 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+    }
+  };
+
+
+  const sendMessage = async () => {
+    if (!userId || !selectedAd?.userId || !messageText.trim()) {
+      console.error("Brak wymaganych danych do wysłania wiadomości.");
+      return;
+    }
+  
+    try {
+      await Message(userId, selectedAd.userId, messageText);
+      console.log("Wiadomość wysłana!");
+  
+      setMessageText(""); 
+    } catch (error) {
+      console.error("Błąd podczas wysyłania wiadomości:", error);
     }
   };
 
@@ -168,43 +206,61 @@ export default function Home() {
             <View style={{alignItems:'center',marginBottom:10}}>
               {selectedAd.userId && avatar[selectedAd.userId] && (
               <Image source={{ uri: avatar[selectedAd.userId] }} style={styles.avatar} 
-              
                 onError={(e) => console.log("Błąd ładowania obrazu", e.nativeEvent.error)} >
-    
               </Image>
             )}
             
             {selectedAd.userId && usernames[selectedAd.userId] && (
               <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', textAlign: 'center',left:-3 ,marginTop:10}}>
-                {usernames[selectedAd.userId]}
-
-              </Text>
+                {usernames[selectedAd.userId]}</Text>
             )}
             </View>
-          
-             
-             
             <Text style={{ fontSize: 28,color:'white', padding: 15, textAlign: 'center', fontWeight: '700' }}>{selectedAd.title}</Text>
-            <Text style={{ fontSize: 20, fontWeight: '300', color:'white',marginTop:15}}>{selectedAd.description}</Text>
+            <Text style={{ fontSize: 20, fontWeight: '300', color:'white',marginTop:15,marginLeft:5,marginRight:5}}>{selectedAd.description}</Text>
             <Text style={{ fontSize: 21, fontWeight: '600',  marginTop:90,color:'white'}}>Cena:{'\n'}</Text>
             <Text style={{  paddingBottom: 15, fontSize: 18,color:'white' }}>{selectedAd.price} zł/godzinę</Text>
             <Text style={{ fontSize: 21, fontWeight: '600', color:'white', paddingTop: 50 }}>Data dodania:{'\n'}</Text>
             <Text style={{ paddingBottom: 15, fontSize: 18,color:'white' }}>
-              {new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </Text>
-
+              {new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
             <View style={{alignItems:'center',borderWidth:1,borderColor:'white',height:60,width:190,marginBottom:80,justifyContent:'center',marginTop:30,borderRadius:18}}>
-                <Text style={{fontSize:26,color:'#1c9e92',fontWeight:400}}>Skontaktuj się</Text>
-
+                <Text style={{fontSize:26,color:'#1c9e92',fontWeight:400}} onPress={() => setCurrentScreen('kontakt')}>Skontaktuj się</Text>
             </View>
-
-          
-           
           </View>
         </View>
       </ScrollView>
     );
   }
+
+
+
+
+  if (currentScreen === 'kontakt') {
+    return (
+      <View style={styles.container}>
+        <Text style={{color:'white',fontSize:24}}> {usernames[selectedAd.userId]}</Text>
+        <FlatList style={{width:'100%',height:'90%'}}
+          data={messages}
+          keyExtractor={(item) => item.$id}
+          renderItem={({ item }) => (
+          <View style={[styles.messageBubble, item.senderId === userId ? styles.sentMessage : styles.receivedMessage]}>
+              <Text style={{ color: 'black' }}>{item.message} </Text>
+          </View>
+        )}
+
+        inverted/>
+        <TextInput style={{marginTop:15,backgroundColor:'white',width:'83%',height:52,marginBottom:10, borderRadius:17,paddingHorizontal:10,left:-22}}
+        placeholder='Napisz wiadomość...'
+        placeholderTextColor='gray'
+        value={messageText} 
+        onChangeText={(text) => setMessageText(text)}
+        
+        />
+        <View style={{alignSelf:'flex-end', bottom:43,right:20}}><Ionicons name='send' size={20} color={'white'} onPress={(sendMessage)}/></View>
+        
+     </View>
+    );
+  }
+
 
   return null;
 }
@@ -212,10 +268,9 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop:90,
     backgroundColor: '#000000',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 90,
   },
   input: {
     backgroundColor: 'white',
@@ -233,6 +288,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     top: -90,
   },
+  
   icon: {
     position: 'absolute',
     right: 10,
@@ -310,5 +366,37 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: '#333',
+  },
+  messageBubble: {
+    marginBottom:30,
+    padding: 10,
+    borderRadius: 16,
+  
+  },
+  sentMessage: {
+   width:180,
+   alignSelf:'flex-end',
+   right:20,
+    backgroundColor: 'white',
+
+  },
+  receivedMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'white',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 18,
+    width: '90%',
+    height: 60,
+    position: 'absolute',
+    bottom: 20,
+    paddingHorizontal: 10,
+  },
+  messageInput: {
+    flex: 1,
+    fontSize: 17,
   },
 });
