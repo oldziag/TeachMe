@@ -13,6 +13,7 @@ const SignUp = () => {
   const [email, setEmail] = useState(''); 
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState(''); 
+  const[phonenumber,setPhonenumber]=useState('');
   const [showPassword, setShowPassword] = useState(false); 
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -23,7 +24,7 @@ const SignUp = () => {
     }
     setSubmitting(true);
     try {
-      const user = await createUser(email, password, username);
+      const user = await createUser(email, password, username,phonenumber);
       setUser(user);
       setIsLogged(true);
       router.replace("/home");
@@ -58,6 +59,15 @@ const SignUp = () => {
             value={email}
             onChangeText={setEmail}
           />
+          <Text style={styles.label}>Numer telefonu</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Numer telefonu"
+            placeholderTextColor="gray"
+            value={phonenumber}
+            onChangeText={setPhonenumber}
+          />
+
           <Text style={styles.label}>Hasło</Text>
           <View>
             <TextInput
@@ -68,6 +78,8 @@ const SignUp = () => {
               onChangeText={setPassword}
               secureTextEntry={!showPassword} 
             />
+            
+
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={() => setShowPassword(!showPassword)}>
@@ -77,6 +89,9 @@ const SignUp = () => {
                 color="gray"
               />
             </TouchableOpacity>
+            
+
+
           </View>
 
           <View style={{ alignItems: 'center', marginBottom: 20, marginTop: 35 }}>

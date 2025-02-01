@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getCurrentUser, getUsername, getEmail } from "../lib/appwrite";
+import { getCurrentUser, getUsername, getEmail,getPhonenumber } from "../lib/appwrite";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -10,6 +10,7 @@ const GlobalProvider = ({ children }) => {
   const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email,setEmail]=useState(null);
+  const [phonenumber,setPhonenumber]=useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,6 +24,8 @@ const GlobalProvider = ({ children }) => {
           setUser(null);
           setUsername(null);
           setEmail(null);
+          setPhonenumber(null);
+          
         }
       } catch (error) {
         console.log(error);
@@ -71,6 +74,22 @@ const GlobalProvider = ({ children }) => {
     fetchEmail();
   }, [user]); 
 
+  useEffect(() => {
+    const fetchPhonenumber = async () => {
+      if (user?.userId) {
+        try {
+          const fetchedPhonenumber = await getPhonenumber(user.userId);
+          setPhonenumber(fetchedPhonenumber);
+        } catch (error) {
+          console.log("Error fetching phonenumber:", error);
+        }
+      } else {
+        setPhonenumber(null);
+      }
+    };
+
+    fetchPhonenumber();
+  }, [user]); 
 
 
   return (
@@ -85,6 +104,8 @@ const GlobalProvider = ({ children }) => {
         loading,
         email,
         setEmail,
+        phonenumber,
+        setPhonenumber,
       }}
     >
       {children}
