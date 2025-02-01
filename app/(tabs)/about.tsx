@@ -100,7 +100,13 @@ export default function ChatScreen() {
       data={[...messages].reverse()}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={[styles.message, item.senderId === user.userId ? styles.sent : styles.received]}>
+          <View
+      style={[
+        styles.message,
+        item.senderId === user.userId ? styles.sent : styles.received,
+        item.senderId === user.userId ? styles.sentPosition : styles.receivedPosition
+      ]}
+    >
             <Text style={styles.messageText}>{item.message}</Text>
           </View>
         )}
@@ -187,5 +193,11 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     padding: 10,
+  },
+  sentPosition: {
+    alignSelf: 'flex-end',  // Wiadomości użytkownika po prawej
+  },
+  receivedPosition: {
+    alignSelf: 'flex-start',  // Wiadomości innych użytkowników po lewej
   },
 });
