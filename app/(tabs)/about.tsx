@@ -195,9 +195,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   sentPosition: {
-    alignSelf: 'flex-end',  // Wiadomości użytkownika po prawej
+    alignSelf: 'flex-end',  
   },
   receivedPosition: {
-    alignSelf: 'flex-start',  // Wiadomości innych użytkowników po lewej
+    alignSelf: 'flex-start',  
   },
 });
