@@ -149,7 +149,7 @@ export default function Home() {
     );
   }
 
-  // Render AdView screen
+ 
   if (currentScreen === 'AdView' && selectedAd) {
     return (
       <ScrollView>
@@ -192,6 +192,11 @@ export default function Home() {
             <Text style={{ paddingBottom: 15, fontSize: 18,color:'white' }}>
               {new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}
             </Text>
+
+            <View style={{alignItems:'center',borderWidth:1,borderColor:'white',height:60,width:190,marginBottom:80,justifyContent:'center',marginTop:30,borderRadius:18}}>
+                <Text style={{fontSize:26,color:'#1c9e92',fontWeight:400}}>Skontaktuj się</Text>
+
+            </View>
 
           
            
