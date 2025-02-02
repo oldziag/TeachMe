@@ -116,7 +116,7 @@ export default function Home() {
   if (currentScreen === 'home') {
     return (
       <View style={styles.container}>
-      <View style={{width:'99%'}}>
+        <View style={{width:'99%'}}>
         <TextInput
             style={styles.input}
             placeholder="Szukaj"
@@ -312,6 +312,8 @@ const styles = StyleSheet.create({
     padding:20,
     width:'99%',
   },
+ 
+  
   icon: {
     position: 'absolute',
     right: 17,

@@ -1,19 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
+  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList
 } from 'react-native';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { useRouter } from 'expo-router';
-import { signOut, getCurrentUser } from '../../lib/appwrite';
+import { signOut, getCurrentUser, getAds } from '../../lib/appwrite';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const Profile = () => {
   const [userId, setUserId] = useState<string | null>(null);
-  const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' | 'ogloszenia'>('profil');
+  const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' | 'ogloszenia'|'AdView'>('profil');
   const { user, setUser, setIsLogged, username, email, phonenumber } = useGlobalContext();
   const router = useRouter();
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [selectedAd, setSelectedAd] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  
+  useEffect(() => {
+      const fetchAdsData = async () => {
+        try {
+          const data = await getAds();
+          setAnnouncements(data);
+        } catch (error) {
+          console.error('Błąd ładowania ogłoszeń:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAdsData();
+    }, []);
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -90,10 +107,59 @@ const Profile = () => {
 
   if (currentScreen === 'ogloszenia') {
     return (
-      <ScreenContainer>
-        <Text style={styles.text}>Twoje ogłoszenia</Text>
+      
+        <View style={{alignItems:'center',width:'100%',backgroundColor:'black',paddingTop:15}}>
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
-      </ScreenContainer>
+        <FlatList style={{marginTop:20}}
+          data={announcements.filter((item) => item.userId === user.userId)}
+          keyExtractor={(item) => item.$id}
+          renderItem={({ item }) => (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setSelectedAd(item);
+                setCurrentScreen('AdView');
+              }}>
+              <View style={styles.adCard}>
+                <Text style={styles.titleText}>{item.title}</Text>
+                <Text style={{ fontSize: 14 }}>{new Date(item.date).toLocaleDateString()}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
+        />
+        </View>
+    
+    );
+  }
+  if (currentScreen === 'AdView') {
+    return (
+      
+      <ScrollView>
+      <View style={{ flex: 1 ,backgroundColor:'black'}}>
+        <View style={styles.adCard2}>
+          <Ionicons
+            name='arrow-undo'
+            onPress={() => setCurrentScreen('ogloszenia')}
+            style={{
+              color: '#1c9e92',
+              fontSize: 40,
+              fontWeight: '600',
+              left: 15,
+            }} />
+
+          <View style={{alignItems:'center',marginBottom:10}}>
+          </View> 
+          <View style={{marginLeft:16}}>
+          <Text style={{ fontSize: 28,color:'white', padding: 15, textAlign: 'center', fontWeight: '700' }}>{selectedAd.title}</Text>
+          <Text style={{ fontSize: 20, fontWeight: '300', color:'white',marginTop:15,marginLeft:5,marginRight:5}}>{selectedAd.description}</Text>
+          <Text style={{ fontSize: 21, fontWeight: '600',  marginTop:90,color:'white'}}>Cena:{'\n'}</Text>
+          <Text style={{  paddingBottom: 15, fontSize: 18,color:'white' }}>{selectedAd.price} zł/godzinę</Text>
+          <Text style={{ fontSize: 21, fontWeight: '600', color:'white', paddingTop: 50 }}>Data dodania:{'\n'}</Text>
+          <Text style={{ paddingBottom: 15, fontSize: 18,color:'white' }}>
+            {new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+           </View>
+        </View>
+      </View>
+    </ScrollView>
     );
   }
 
@@ -198,6 +264,29 @@ const styles = StyleSheet.create({
     fontSize: 21,
     color: 'white',
     marginLeft: 15,
+  },
+  adCard: {
+    marginTop: 15,
+    flex: 1,
+    width: 370,
+    backgroundColor: '#fff',
+    height: 130,
+    borderRadius: 20,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    padding: 20,
+    marginBottom: 10,
+  },
+  adCard2: {
+    backgroundColor: 'black',
+    height: '200%',
+    width: '100%',
+    paddingTop: 50,
+  },
+  titleText:{
+    fontSize: 23, 
+    fontWeight: '400',
+     marginBottom: 10
   },
 });
 
