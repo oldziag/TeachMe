@@ -34,14 +34,12 @@ export default function ChatScreen() {
         console.error("Błąd pobierania użytkowników:", error);
       }
     };
-
     fetchUsers();
   }, []);
 
  
   useEffect(() => {
     if (!currentUserId) return;
-
     const fetchMessages = async () => {
       try {
         const data = await getMessages(user.userId, currentUserId);
@@ -55,6 +53,7 @@ export default function ChatScreen() {
     const interval = setInterval(fetchMessages, 1000);
     return () => clearInterval(interval);
   }, [currentUserId]);
+
 
 
   const sendMessage = async () => {
@@ -92,27 +91,45 @@ export default function ChatScreen() {
   const renderChatScreen = () => (
     <View style={{ flex: 1, width: '100%' }}>
       <TouchableOpacity onPress={() => setCurrentUserId(null)} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="white" />
+        <Ionicons name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
-      <View style={{height:40}}></View>
-      <FlatList
+      <View style={{ height: 40 }}></View>
   
-      data={[...messages].reverse()}
+      <FlatList
+        data={[...messages].reverse()} 
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View
-      style={[
-        styles.message,
-        item.senderId === user.userId ? styles.sent : styles.received,
-        item.senderId === user.userId ? styles.sentPosition : styles.receivedPosition
-      ]}
-    >
-            <Text style={styles.messageText}>{item.message}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const sender = users.find((u) => u.userId === item.senderId);
+  
+          return (
+            <View
+              style={[
+                styles.messageContainer,
+                item.senderId === user.userId ? styles.sentContainer : styles.receivedContainer
+              ]}
+            >
+              {item.senderId !== user.userId && sender && ( 
+                <Image source={{ uri: sender.avatar }} style={styles.avatarMessage} />
+              )}
+  
+              <View
+                style={[
+                  styles.message,
+                  item.senderId === user.userId ? styles.sent : styles.received
+                ]}
+              >
+                <Text style={styles.messageText}>{item.message}</Text>
+              </View>
+              {item.senderId === user.userId && sender && ( 
+                <Image 
+                  source={{ uri: sender.avatar }} 
+                  style={styles.avatarMessage} />
+              )}
+            </View>
+          );
+        }}
       />
-
-     
+  
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -127,6 +144,7 @@ export default function ChatScreen() {
       </View>
     </View>
   );
+  
 
   return <View style={styles.container}>{currentUserId ? renderChatScreen() : renderUserList()}</View>;
 }
@@ -136,6 +154,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
     padding: 20,
+  },
+  messageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  sentContainer: {
+    alignSelf: 'flex-end',
+   
+  },
+  receivedContainer: {
+    alignSelf: 'flex-start'
   },
   userItem: {
     flexDirection: 'row',
@@ -150,12 +180,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 15,
   },
+  avatarMessage: {
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    marginHorizontal: 8,
+  },
   username: {
     color: 'white',
     fontSize: 18,
   },
   backButton: {
     padding: 10,
+    marginTop:15,
     alignSelf: 'flex-start',
   },
   message: {
@@ -178,6 +215,7 @@ const styles = StyleSheet.create({
     fontSize:16,
   },
   inputContainer: {
+    marginTop:10,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
@@ -186,8 +224,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+   
     backgroundColor:'white',
-    color: 'white',
+    color: 'black',
     padding: 10,
     fontSize:17,
   },

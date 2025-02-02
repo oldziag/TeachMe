@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+  View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
+  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard
+} from 'react-native';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { useRouter } from 'expo-router';
 import { signOut, getCurrentUser } from '../../lib/appwrite';
 
 const Profile = () => {
   const [userId, setUserId] = useState<string | null>(null);
-  const router = useRouter(); 
-  const { user, setUser, setIsLogged, username, email , phonenumber} = useGlobalContext();
   const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' | 'ogloszenia'>('profil');
+  const { user, setUser, setIsLogged, username, email, phonenumber } = useGlobalContext();
+  const router = useRouter();
 
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -18,144 +22,108 @@ const Profile = () => {
           setUserId(currentUser.userId);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Błąd pobierania danych użytkownika:', error);
       }
     };
     fetchUserData();
   }, []);
 
+
   const logout = async () => {
     try {
-      await signOut(); 
-      setUser(null); 
-      setIsLogged(false); 
-      router.replace("/sign-in"); 
+      await signOut();
+      setUser(null);
+      setIsLogged(false);
+      router.replace("/sign-in");
     } catch (error) {
-      console.error("Error during logout:", error.message);
+      console.error("Błąd podczas wylogowania:", error.message);
     }
   };
 
+
   if (currentScreen === 'profil') {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-            <View style={{ alignItems: 'center', paddingTop: 30 }}>
-              <Image
-                style={styles.image}
-                source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
-              />
-              <Text style={{ color: 'white', position: 'absolute', fontSize: 27, top: 40, left: 130 }}>
-                {username}
-              </Text>
-              <Text style={{ color: 'white', position: 'absolute', fontSize: 15, top: 80, left: 130 }}>
-                {email}
-              </Text>
-
-              <View style={styles.button}>
-                <Text style={styles.text} onPress={() => setCurrentScreen('dane')}> Twoje dane </Text>
-              </View>
-
-              <View style={styles.button}>
-                <Text style={styles.text} onPress={() => setCurrentScreen('ogloszenia')}> Twoje ogłoszenia </Text>
-              </View>
-
-              <View style={styles.button}>
-                <Text style={styles.text}> Uczniowie i korepetytorzy</Text>
-              </View>
-
-              <View style={styles.button}>
-                <Text style={styles.text}> Skontaktuj się z nami</Text>
-              </View>
-
-              <View style={{ marginTop: 50 }}>
-                <Text style={styles.text} onPress={logout}>Wyloguj się</Text>
-              </View>
-            </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <ScreenContainer>
+        <View style={styles.profileHeader}>
+          <Image
+            style={styles.image}
+            source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
+          />
+          <View>
+            <Text style={styles.username}>{username}</Text>
+            <Text style={styles.email}>{email}</Text>
+          </View>
+        </View>
+        <View style={{alignItems:'center'}}>
+          <ProfileButton label="Twoje dane" onPress={() => setCurrentScreen('dane')} />
+          <ProfileButton label="Twoje ogłoszenia" onPress={() => setCurrentScreen('ogloszenia')} />
+          <ProfileButton label="Uczniowie i korepetytorzy" />
+          <ProfileButton label="Skontaktuj się z nami" />
+        </View>
+        <TouchableOpacity style={styles.logout} onPress={logout}>
+          <Text style={styles.text}>Wyloguj się</Text>
+        </TouchableOpacity>
+      </ScreenContainer>
     );
   }
 
+  
   if (currentScreen === 'dane') {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-            <View style={{ alignItems: 'center', paddingTop: 30 }}>
-            <Image
-             style={{width:100,height:100,borderRadius:170, marginBottom:15}}
-             source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
-              />
+      <ScreenContainer>
+        <Image
+          style={styles.bigAvatar}
+          source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
+        />
 
-              <View style={{ width: '100%', alignItems: 'flex-start' }}>
-                <Text style={{fontSize:15,color:'white',marginTop:30,left:10}}>Nazwa użytkownika</Text>
-                <View style={{borderWidth:2,borderColor:'gray',width:'100%',height:40,borderRadius:18,justifyContent:'center',marginTop:15
+        <UserInfo label="Nazwa użytkownika" value={username} />
+        <UserInfo label="Email" value={email} />
+        <UserInfo label="Numer telefonu" value={phonenumber} />
 
-                }}>
-                  <Text style={{fontSize:21,color:'white',marginLeft:15}}>{username}
-                 </Text>
-                </View> 
-
-                <Text style={{fontSize:15,color:'white',marginTop:30,left:10}}>Email</Text>
-                <View style={{borderWidth:2,borderColor:'gray',width:'100%',height:40,borderRadius:18,justifyContent:'center',marginTop:15
-
-                }}>
-                  <Text style={{fontSize:21,color:'white',marginLeft:15}}>{email}
-                 </Text>
-                </View> 
-                <Text style={{fontSize:15,color:'white',marginTop:30,left:10}}>Numer telefonu</Text>
-                <View style={{borderWidth:2,borderColor:'gray',width:'100%',height:40,borderRadius:18,justifyContent:'center',marginTop:15
-
-                }}>
-                  <Text style={{fontSize:21,color:'white',marginLeft:15}}>{phonenumber}
-                 </Text>
-                </View> 
-
-              </View>
-              
-
-              <View style={styles.button}>
-                <Text style={styles.text} onPress={() => setCurrentScreen('profil')}>Wróć do profilu</Text>
-              </View>
-            </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
+      </ScreenContainer>
     );
   }
 
 
   if (currentScreen === 'ogloszenia') {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-            <View style={{ alignItems: 'center', paddingTop: 30 }}>
-              <Text style={styles.text}>Twoje ogłoszenia</Text>
-              <View style={styles.button}>
-                <Text style={styles.text} onPress={() => setCurrentScreen('profil')}>Wróć do profilu</Text>
-              </View>
-            </View>
-            
-          </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <ScreenContainer>
+        <Text style={styles.text}>Twoje ogłoszenia</Text>
+        <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
+      </ScreenContainer>
     );
   }
 
   return null;
 };
+
+
+const ScreenContainer = ({ children }: { children: React.ReactNode }) => (
+  <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+        {children}
+      </ScrollView>
+    </TouchableWithoutFeedback>
+  </KeyboardAvoidingView>
+);
+
+const ProfileButton = ({ label, onPress }: { label: string, onPress?: () => void }) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Text style={styles.text}>{label}</Text>
+  </TouchableOpacity>
+);
+
+const UserInfo = ({ label, value }: { label: string, value: string }) => (
+  <View style={{ width: '100%', alignItems: 'flex-start' }}>
+    <Text style={styles.infoLabel}>{label}</Text>
+    <View style={styles.infoContainer}>
+      <Text style={styles.infoText}>{value}</Text>
+    </View>
+  </View>
+);
+
 
 const styles = StyleSheet.create({
   container: {
@@ -163,6 +131,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     padding: 20,
     paddingTop: 60,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft:20,
+    paddingTop: 30,
+  },
+  image: {
+    width: 90,
+    height: 90,
+    borderRadius: 170,
+    marginRight: 15,
+  },
+  username: {
+    color: 'white',
+    fontSize: 27,
+  },
+  email: {
+    color: 'white',
+    fontSize: 15,
   },
   button: {
     backgroundColor: 'black',
@@ -180,12 +168,35 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: '500',
   },
-  image: {
-    width: 90,
-    height: 90,
+  logout: {
+    marginTop: 50,
+    alignItems: 'center',
+  },
+  bigAvatar: {
+    width: 100,
+    height: 100,
     borderRadius: 170,
-    marginBottom: 20,
-    left: -110,
+    marginBottom: 15,
+  },
+  infoLabel: {
+    fontSize: 15,
+    color: 'white',
+    marginTop: 30,
+    left: 10,
+  },
+  infoContainer: {
+    borderWidth: 2,
+    borderColor: 'gray',
+    width: '100%',
+    height: 40,
+    borderRadius: 18,
+    justifyContent: 'center',
+    marginTop: 15,
+  },
+  infoText: {
+    fontSize: 21,
+    color: 'white',
+    marginLeft: 15,
   },
 });
 

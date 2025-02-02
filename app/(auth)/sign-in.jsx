@@ -6,8 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'; 
 import ButtonComponent from '@/components/Buttons';
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { getCurrentUser, signIn } from "../../lib/appwrite";
-import { checkActiveSession } from '../../lib/appwrite'; 
+import { getCurrentUser, signIn,checkActiveSession  } from "../../lib/appwrite";
+
 
 
 

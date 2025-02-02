@@ -1,7 +1,13 @@
 import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ButtonComponent from '@/components/Buttons';
-import { getAds, getUsername, getCurrentUser, getAvatar, Message, getMessages } from 'lib/appwrite'; 
+import { 
+ getAds,
+ getUsername,
+ getCurrentUser,
+ getAvatar,
+ Message,
+ getMessages } from 'lib/appwrite'; 
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons'; 
 import { useGlobalContext } from "../../context/GlobalProvider";
@@ -27,7 +33,7 @@ export default function Home() {
         const currentUser = await getCurrentUser();
         if (currentUser) setUserId(currentUser.userId);
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Błąd pobierania danych użytkownika:', error);
       }
     };
     fetchUserData();
@@ -35,15 +41,15 @@ export default function Home() {
 
 
 
-useEffect(() => {
-  const fetchMessages = async () => {
-    if (userId && selectedAd?.userId) {
-      try {
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (userId && selectedAd?.userId) {
+        try {
         const msgs = await getMessages(userId, selectedAd.userId);
         setMessages(msgs);
-      } catch (error) {
-        console.error("Błąd pobierania wiadomości:", error);
-      }
+        } catch (error) {
+          console.error("Błąd pobierania wiadomości:", error);
+        }
     }
   };
 
@@ -52,13 +58,14 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [userId, selectedAd?.userId]);
 
+
   useEffect(() => {
     const fetchAdsData = async () => {
       try {
         const data = await getAds();
         setAnnouncements(data);
       } catch (error) {
-        console.error('Failed to load announcements:', error);
+        console.error('Błąd ładowania ogłoszeń:', error);
       } finally {
         setLoading(false);
       }
@@ -78,7 +85,7 @@ useEffect(() => {
         setAvatars((prev) => ({ ...prev, [userId]: avatarUrl }));
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Błąd pobierania danych użytkownika", error);
     }
   };
 
@@ -88,11 +95,8 @@ useEffect(() => {
       console.error("Brak wymaganych danych do wysłania wiadomości.");
       return;
     }
-  
     try {
       await Message(userId, selectedAd.userId, messageText);
-      console.log("Wiadomość wysłana!");
-  
       setMessageText(""); 
     } catch (error) {
       console.error("Błąd podczas wysyłania wiadomości:", error);
@@ -112,13 +116,17 @@ useEffect(() => {
   if (currentScreen === 'home') {
     return (
       <View style={styles.container}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={styles.inputStyle}>
           <TextInput
             style={styles.input}
             placeholder="Szukaj"
             placeholderTextColor="gray"
           />
-          <Ionicons name="search" size={21} color="gray" style={styles.icon} />
+          <Ionicons 
+            name="search" 
+            size={21} 
+            color="gray" 
+            style={styles.icon} />
         </View>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
@@ -140,14 +148,17 @@ useEffect(() => {
             </TouchableWithoutFeedback>
           ))}
         </ScrollView>
-
-        <Text style={styles.text2}>
+    
+        <Text style={styles.motto}>
           Zacznij teraz i dziel się swoją pasją do{' '}
           <Text style={{ color: '#1c9e92', fontWeight: '600' }}>nauki!</Text>
         </Text>
 
-        <View style={styles.container2}>
-          <ButtonComponent theme="start" label="Dodaj ogłoszenie" onPress={() => router.replace("/create_ad")} />
+        <View style={{bottom:30}}>
+          <ButtonComponent 
+            theme="start" 
+            label="Dodaj ogłoszenie" 
+            onPress={() => router.replace("/create_ad")} />
         </View>
       </View>
     );
@@ -167,22 +178,25 @@ useEffect(() => {
                 setCurrentScreen('AdView');
               }}>
               <View style={styles.adCard}>
-                <Text style={{ fontSize: 23, fontWeight: '400', marginBottom: 10 }}>{item.title}</Text>
+                <Text style={styles.titleText}>{item.title}</Text>
                 <Text style={{ fontSize: 14 }}>{new Date(item.date).toLocaleDateString()}</Text>
               </View>
             </TouchableWithoutFeedback>
           )}
         />
-        <Text
-          onPress={() => setCurrentScreen('home')}
-          style={{
-            color: '#1c9e92',
-            fontSize: 30,
-            paddingBottom: 20,
-            fontWeight: '600',
+        <View style={{marginTop:15}}>
+          <Text
+              onPress={() => setCurrentScreen('home')}
+              style={{
+              color: '#1c9e92',
+              fontSize: 30,
+              paddingBottom: 20,
+              fontWeight: '400',
           }}>
           Powrót
         </Text>
+        </View>
+        
       </View>
     );
   }
@@ -222,7 +236,7 @@ useEffect(() => {
             <Text style={{ fontSize: 21, fontWeight: '600', color:'white', paddingTop: 50 }}>Data dodania:{'\n'}</Text>
             <Text style={{ paddingBottom: 15, fontSize: 18,color:'white' }}>
               {new Date(selectedAd.date).toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
-            <View style={{alignItems:'center',borderWidth:1,borderColor:'white',height:60,width:190,marginBottom:80,justifyContent:'center',marginTop:30,borderRadius:18}}>
+            <View style={{alignItems:'center',borderWidth:1,borderColor:'white',height:60,width:210,marginBottom:80,justifyContent:'center',marginTop:30,borderRadius:18}}>
                 <Text style={{fontSize:26,color:'#1c9e92',fontWeight:400}} onPress={() => setCurrentScreen('kontakt')}>Skontaktuj się</Text>
             </View>
           </View>
@@ -237,6 +251,15 @@ useEffect(() => {
   if (currentScreen === 'kontakt') {
     return (
       <View style={styles.container}>
+         <Ionicons
+              name='arrow-undo'
+              onPress={() => setCurrentScreen('AdView')}
+              style={{
+                color: '#1c9e92',
+                fontSize: 40,
+                fontWeight: '600',
+                left: -160
+              }} />
         <Text style={{color:'white',fontSize:24}}> {usernames[selectedAd.userId]}</Text>
         <FlatList style={{width:'100%',height:'90%'}}
           data={messages}
@@ -246,17 +269,22 @@ useEffect(() => {
               <Text style={{ color: 'black' }}>{item.message} </Text>
           </View>
         )}
-
         inverted/>
-        <TextInput style={{marginTop:15,backgroundColor:'white',width:'83%',height:52,marginBottom:10, borderRadius:17,paddingHorizontal:10,left:-22}}
+
+        <TextInput style={styles.sendMess}
         placeholder='Napisz wiadomość...'
         placeholderTextColor='gray'
         value={messageText} 
         onChangeText={(text) => setMessageText(text)}
         
         />
-        <View style={{alignSelf:'flex-end', bottom:43,right:20}}><Ionicons name='send' size={20} color={'white'} onPress={(sendMessage)}/></View>
-        
+        <View 
+        style={{alignSelf:'flex-end', bottom:43,right:20}}>
+          <Ionicons name='send' 
+            size={20} 
+            color={'white'} 
+            onPress={(sendMessage)}/>
+        </View>
      </View>
     );
   }
@@ -272,6 +300,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     alignItems: 'center',
   },
+  inputStyle:{
+    flexDirection: 'row', 
+    alignItems: 'center' 
+
+  },
   input: {
     backgroundColor: 'white',
     width: '90%',
@@ -282,12 +315,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginLeft: 15,
   },
-  container2: {
-    backgroundColor: '#000000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    top: -90,
-  },
+ 
   
   icon: {
     position: 'absolute',
@@ -317,7 +345,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     margin: 10,
   },
-  text2: {
+  motto: {
     color: 'white',
     fontSize: 24,
     textAlign: 'center',
@@ -399,4 +427,20 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
   },
-});
+  titleText:{
+    fontSize: 23, 
+    fontWeight: '400',
+     marginBottom: 10
+  },
+  sendMess:{
+    marginTop:15,
+    backgroundColor:'white',
+    width:'83%',
+    height:52,
+    marginBottom:10, 
+    borderRadius:17,
+    paddingHorizontal:10,
+    left:-22
+
+  }
+}); 

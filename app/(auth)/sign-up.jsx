@@ -18,7 +18,7 @@ const SignUp = () => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const submit = async () => {
-    if (username === " " || email === " " || password === " ") {
+    if (username === " " || email === " " || password === " "||phonenumber===" ") {
       alert("Error", "Please fill in all fields");
       return; 
     }

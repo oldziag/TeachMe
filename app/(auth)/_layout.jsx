@@ -1,14 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
-import{Stack}from 'expo-router';
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { Redirect, router } from "expo-router"; 
+import { Redirect, router,Stack } from "expo-router"; 
 
 const logowanie = () => {
   const { loading, isLogged } = useGlobalContext();
   if ( isLogged) return <Redirect href="/home" />;}
-
 
 const AuthLayout = () => {
   return (
@@ -20,7 +18,6 @@ const AuthLayout = () => {
         headerShown:false,
         animation: 'fade'
       }}/>
-
       <Stack.Screen
       name='sign-up'
       options={{
