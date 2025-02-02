@@ -130,10 +130,14 @@ export default function Home() {
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
           {[
             { name: 'Matematyka', image: require('assets/images/matematyka.png') },
-            { name: 'Biologia', image: require('assets/images/biology.png') },
             { name: 'Fizyka', image: require('assets/images/fizyka.png') },
             { name: 'Informatyka', image: require('assets/images/informatyka.png') },
+            { name: 'Biologia', image: require('assets/images/biology.png') },
+            { name: 'Geografia', image: require('assets/images/geografia.png') },
             { name: 'Chemia', image: require('assets/images/chemia.png') },
+            { name: 'J. Angielski', image: require('assets/images/angielski.png') },
+            { name: 'J. Hiszpański', image: require('assets/images/hiszpanski.png') },
+           
           ].map((category, index) => (
             <TouchableWithoutFeedback key={index} onPress={() => {
               setSelectedCategory(category.name);

@@ -90,9 +90,20 @@ export default function ChatScreen() {
   
   const renderChatScreen = () => (
     <View style={{ flex: 1, width: '100%' }}>
-      <TouchableOpacity onPress={() => setCurrentUserId(null)} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={30} color="white" />
-      </TouchableOpacity>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    
+    <TouchableOpacity onPress={() => setCurrentUserId(null)} style={styles.backButton}>
+      <Ionicons name="arrow-back" size={30} color="white" />
+    </TouchableOpacity>
+      <View style={{ position: 'absolute', left: 0, right: 0, top:20 }}>
+        <Text style={{ color: 'white', fontSize: 23, textAlign: 'center' }}>
+          {users.find((u) => u.userId === currentUserId)?.username}
+        </Text>
+      </View>
+      
+
+      </View>
+      
       <View style={{ height: 40 }}></View>
   
       <FlatList
