@@ -116,19 +116,17 @@ export default function Home() {
   if (currentScreen === 'home') {
     return (
       <View style={styles.container}>
-        <View style={styles.inputStyle}>
-          <TextInput
+      <View style={{width:'99%'}}>
+        <TextInput
             style={styles.input}
             placeholder="Szukaj"
-            placeholderTextColor="gray"
-          />
-          <Ionicons 
+            placeholderTextColor="gray" />
+        <Ionicons 
             name="search" 
             size={21} 
             color="gray" 
             style={styles.icon} />
         </View>
-
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
           {[
             { name: 'Matematyka', image: require('assets/images/matematyka.png') },
@@ -307,19 +305,16 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: 'white',
-    width: '90%',
     height:50,
     borderRadius: 18,
     fontSize: 18,
-    paddingHorizontal: 15,
     marginBottom: 20,
-    marginLeft: 15,
+    padding:20,
+    width:'99%',
   },
- 
-  
   icon: {
     position: 'absolute',
-    right: 10,
+    right: 17,
     top: 15
   },
   text: {

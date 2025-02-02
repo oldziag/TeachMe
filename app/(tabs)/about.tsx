@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-   
     backgroundColor:'white',
     color: 'black',
     padding: 10,

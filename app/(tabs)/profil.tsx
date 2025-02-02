@@ -44,6 +44,7 @@ const Profile = () => {
   if (currentScreen === 'profil') {
     return (
       <ScreenContainer>
+        <View style={{backgroundColor:'black', alignItems:'center'}}>
         <View style={styles.profileHeader}>
           <Image
             style={styles.image}
@@ -63,6 +64,7 @@ const Profile = () => {
         <TouchableOpacity style={styles.logout} onPress={logout}>
           <Text style={styles.text}>Wyloguj się</Text>
         </TouchableOpacity>
+        </View>
       </ScreenContainer>
     );
   }
@@ -100,7 +102,7 @@ const Profile = () => {
 
 
 const ScreenContainer = ({ children }: { children: React.ReactNode }) => (
-  <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+  <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, }}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         {children}
@@ -135,7 +137,6 @@ const styles = StyleSheet.create({
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft:20,
     paddingTop: 30,
   },
   image: {
