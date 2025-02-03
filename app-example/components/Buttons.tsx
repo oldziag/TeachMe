@@ -1,18 +1,19 @@
-import { StyleSheet, View, Pressable, Text, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, View, Pressable, Text, StyleProp, ViewStyle, ActivityIndicator } from 'react-native';
 import { ReactNode } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
 
-type Props = {
-  label: string;
-  theme?: 'primary' | 'secondary' | 'tertiary' |'napis'|'start';
-  onPress?: () => void;
-  children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
+type ButtonProps = {
+  label: string,
+  theme?: 'primary' | 'secondary' | 'tertiary' |'napis'|'start',
+  onPress?: () => void,
+  children?: ReactNode,
+  style?: StyleProp<ViewStyle>,
+  isLoading?: boolean
 };
 
-export default function Buttons({ label, theme, onPress }: Props) {
+export default function Buttons({ label, theme, onPress, isLoading }: ButtonProps) {
   const handlePress = onPress || (() => alert('Button pressed'));
 
   if (theme === 'primary') {
@@ -54,25 +55,17 @@ export default function Buttons({ label, theme, onPress }: Props) {
     );
   }
 
-  else if (theme === 'napis') {
-    return (
-
-      <View style={styles.buttonContainer}>
-      <Pressable style={styles.button3} onPress={handlePress}>
-        <Text style={styles.napis2}>{label}</Text>
-      </Pressable>
-    </View>
-       
-    );
-  }
-
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.button} onPress={handlePress}>
-        <Text style={styles.buttonLabel}>{label}</Text>
-      </Pressable>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="black" />
+      ) : (
+        <Pressable style={styles.button} onPress={handlePress}>
+          <Text style={styles.buttonLabel}>{label}</Text>
+        </Pressable>
+      )}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

@@ -28,7 +28,7 @@ export default function TabsLayOut() {
               
                 tabBarPosition: "bottom",
                 tabBarStyle: {
-                  backgroundColor: "#1c9e92",
+                backgroundColor: "#1c9e92",
 
                 },
               }}
@@ -49,17 +49,16 @@ export default function TabsLayOut() {
                 }}
               />
               <Tabs.Screen
-                name="about"
+                name="messageList"
                 options={{
-                 
                   tabBarLabel: "Wiadomości",
                   headerShown:false,
                   tabBarIcon: ({ focused, color }) => (
                     <Ionicons
                       name={
                         focused
-                          ? "information-circle"
-                          : "information-circle-outline"
+                          ? "mail"
+                          : "mail-outline"
                       }
                       color={color}
                       size={30}

@@ -1,49 +1,58 @@
-import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link,useRouter,router } from 'expo-router'; 
+import { Link, useRouter } from 'expo-router'; 
 import { Ionicons } from '@expo/vector-icons'; 
-import { useNavigation } from '@react-navigation/native'; 
 import ButtonComponent from '@/components/Buttons';
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { getCurrentUser, signIn,checkActiveSession  } from "../../lib/appwrite";
-
-
-
-
+import { useGlobalContext } from "#/context/GlobalProvider";
+import { getCurrentUser, signIn, checkActiveSession } from "#/lib/appwrite";
+import { checkData, LoginData } from './auth';
 const SignIn = () => {
-  const [email, setEmail] = useState(''); 
-  const [password, setPassword] = useState(''); 
-  const [showPassword, setShowPassword] = useState(false); 
+
+
+  const [ authData, setAuthData ] = useState<LoginData>({
+    email: "",
+    password: "",
+    isPasswordShown: false
+  });
+
+  function updateAuthData<K extends keyof LoginData>(key: K, value: LoginData[K]) {
+    console.log(key, value)
+    setAuthData({ ...authData, [key]: value })
+  }
+
   const { setUser, setIsLogged } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
+  
   const router = useRouter();
-  useEffect(() => {
-      checkActiveSession(router); 
-    }, []);
-
-
+  useEffect(() => { checkActiveSession(router) }, []);
 
   const submit = async () => {
-    if (email === "" || password === "") {
-      Alert.alert("Error", "Please fill in all fields");
-    }
-    setSubmitting(true);
+
     try {
-      await signIn(email, password);
-      const user=await getCurrentUser();
+
+      checkData(authData);
+      setSubmitting(true);
+
+      await signIn(authData.email, authData.password);
+
+      const user = await getCurrentUser();
       setUser(user);
+
       setIsLogged(true);
-      router.replace("/home");
-    } catch (error) {
-      Alert.alert("Error", error.message);
+      setTimeout(() => {
+        router.replace("../home");
+      });
+     
+
+    } catch (err) {
+      alert("Error: " + err.message);
+      
     } finally {
       setSubmitting(false);
     }
+
   };
-
-
-
 
   return (
     <SafeAreaView style={{ backgroundColor: 'black', height: '100%' }}>
@@ -51,7 +60,7 @@ const SignIn = () => {
         <View style={styles.container}>
   
           <Image
-            source={require('assets/images/logoteachme.png')}
+            source={require('#/assets/images/logoteachme.png')}
             style={styles.logo}
           />
          
@@ -63,8 +72,8 @@ const SignIn = () => {
             style={styles.input}
             placeholder="Email"
             placeholderTextColor="gray"
-            value={email}
-            onChangeText={setEmail}
+            value={ authData.email }
+            onChangeText={ text => updateAuthData("email", text) }
           />
 
   
@@ -74,16 +83,16 @@ const SignIn = () => {
               style={[styles.input, styles.input]} 
               placeholder="Hasło"
               placeholderTextColor="gray"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword} 
+              value={ authData.password }
+              onChangeText={ text => updateAuthData("password", text) }
+              secureTextEntry={ !authData.isPasswordShown } 
             />
             <TouchableOpacity
               style={styles.iconContainer}
-              onPress={() => setShowPassword(!showPassword)} 
+              onPress={ () => updateAuthData("isPasswordShown", !authData.isPasswordShown) }
             >
               <Ionicons
-                name={showPassword ? 'eye' : 'eye-off'} 
+                name={ authData.isPasswordShown ? 'eye' : 'eye-off' }
                 size={24}
                 color="gray"
               />
@@ -94,11 +103,12 @@ const SignIn = () => {
                 theme="start"
                 label="Zaloguj się"
                 onPress={submit}
-                isLoading={isSubmitting}/>
+                isLoading={isSubmitting} 
+              />
 
             <Text style={{color:'white',fontSize:17,marginTop:20}}>
               Nie masz konta?{" "}
-              <Link href="/sign-up" style={{color:'#1c9e92',fontWeight:'600'}}>
+              <Link href="./sign-up" style={{color:'#1c9e92',fontWeight:'600'}}>
               Zarejestruj się
               </Link>
             </Text>

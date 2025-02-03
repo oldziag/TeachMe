@@ -2,90 +2,100 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons'; 
-import { createUser } from "../../lib/appwrite"; 
+import { createUser } from "#/lib/appwrite"; 
 import ButtonComponent from '@/components/Buttons'; 
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { Link, router } from "expo-router";
+import { useGlobalContext } from "#/context/GlobalProvider";
 
+import { Link, router } from "expo-router";
+import { LoginData, checkData } from "./auth"
 
 const SignUp = () => {
+
+  const [ authData, setAuthData ] = useState<LoginData>({
+    email: "",
+    username: "",
+    phone: "",
+    password: "",
+    isPasswordShown: false
+  });
+
+  function updateAuthData<K extends keyof LoginData>(key: K, value: LoginData[K]) {
+    console.log(key, value)
+    setAuthData({ ...authData, [key]: value })
+  }
+
   const { setUser, setIsLogged } = useGlobalContext();
-  const [email, setEmail] = useState(''); 
-  const [username, setUsername] = useState(''); 
-  const [password, setPassword] = useState(''); 
-  const[phonenumber,setPhonenumber]=useState('');
-  const [showPassword, setShowPassword] = useState(false); 
-  const [isSubmitting, setSubmitting] = useState(false);
 
   const submit = async () => {
-    if (username === " " || email === " " || password === " "||phonenumber===" ") {
-      alert("Error", "Please fill in all fields");
-      return; 
-    }
-    setSubmitting(true);
+
     try {
-      const user = await createUser(email, password, username,phonenumber);
+
+      checkData(authData);
+      const user = await createUser(
+        authData.email,
+        authData.password,
+        authData.username,
+        authData.phone
+      );
+
       setUser(user);
       setIsLogged(true);
-      router.replace("/home");
-    } 
-    catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setSubmitting(false);
+      router.replace("./home");
+    } catch (err) {
+      alert("Error" + err.message);
     }
-  };
 
+  };
 
   return (
     <SafeAreaView style={{ backgroundColor: 'black', height: '100%' }}>
       <ScrollView>
-        <View style={styles.container}>
-          <Image source={require('assets/images/logoteachme.png')} style={styles.logo} />
-          <Text style={styles.title}>Zarejestruj się do TeachMe</Text>
-          <Text style={styles.label}>Nazwa użytkownika</Text>
+        <View style={ styles.container }>
+          <Image source={ require('#/assets/images/logoteachme.png')} style={ styles.logo } />
+          <Text style={ styles.title }>Zarejestruj się do TeachMe</Text>
+          <Text style={ styles.label }>Nazwa użytkownika</Text>
           <TextInput
-            style={styles.input}
+            style={ styles.input }
             placeholder="Nazwa użytkownika"
             placeholderTextColor="gray"
-            value={username}
-            onChangeText={setUsername} 
+            value={ authData.username }
+            onChangeText={ text => updateAuthData("username", text) } 
           />
-          <Text style={styles.label}>Email</Text>
+          <Text style={ styles.label }>Email</Text>
           <TextInput
-            style={styles.input}
+            style={ styles.input }
             placeholder="Email"
             placeholderTextColor="gray"
-            value={email}
-            onChangeText={setEmail}
+            value={ authData.email }
+            onChangeText={ text => updateAuthData("email", text) }
           />
-          <Text style={styles.label}>Numer telefonu</Text>
+          <Text style={ styles.label }>Numer telefonu</Text>
           <TextInput
-            style={styles.input}
+            style={ styles.input }
             placeholder="Numer telefonu"
             placeholderTextColor="gray"
-            value={phonenumber}
-            onChangeText={setPhonenumber}
+            value={ authData.phone }
+            onChangeText={ text => updateAuthData("phone", text) }
           />
 
-          <Text style={styles.label}>Hasło</Text>
+          <Text style={ styles.label }>Hasło</Text>
           <View>
             <TextInput
-              style={styles.input}
+              style={ styles.input }
               placeholder="Hasło"
               placeholderTextColor="gray"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword} 
+              value={ authData.password }
+              onChangeText={ text => updateAuthData("password", text) }
+              secureTextEntry={ !authData.isPasswordShown } 
             />
             
 
             <TouchableOpacity
-              style={styles.iconContainer}
-              onPress={() => setShowPassword(!showPassword)}>
+              style={ styles.iconContainer }
+              onPress={ () => updateAuthData("isPasswordShown", !authData.isPasswordShown) }>
               <Ionicons
-                name={showPassword ? 'eye' : 'eye-off'}
-                size={24}
+                name={ authData.isPasswordShown ? 'eye' : 'eye-off' }
+                size={ 24 }
                 color="gray"
               />
             </TouchableOpacity>
@@ -98,12 +108,13 @@ const SignUp = () => {
             <ButtonComponent
               theme="start"
               label="Zarejestruj się"
-              onPress={submit}/>
+              isLoading={false}
+              onPress={ submit }/>
 
             <Text style={{ color: 'white', fontSize: 17, marginTop: 20 }}>
-              Masz już konto?{" "}
+              Masz już konto?{ " "}
 
-              <Link href="/sign-in" style={{ color: '#1c9e92', fontWeight: '600' }}>
+              <Link href="../(auth)/sign-in" style={{ color: '#1c9e92', fontWeight: '600' }}>
                Zaloguj się
               </Link>
               

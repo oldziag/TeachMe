@@ -55,14 +55,14 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="index"
+          name="(adsFolder)"
           options={{
             headerShown: false,
             animation: 'fade'
           }}
         />
-         <Stack.Screen
-          name="create_ad"
+        <Stack.Screen
+          name="index"
           options={{
             headerShown: false,
             animation: 'fade'

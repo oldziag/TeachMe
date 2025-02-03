@@ -5,16 +5,14 @@ import {
   TextInput
 } from 'react-native';
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { useRouter } from 'expo-router';
 import { signOut, getCurrentUser, getAds,updateAd, deleteAd } from '../../lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
 
 
 const Profile = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+
   const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' | 'ogloszenia'|'AdView'>('profil');
-  const { user, setUser, setIsLogged, username, email, phonenumber } = useGlobalContext();
-  const router = useRouter();
+  const { user, setUser, setIsLogged } = useGlobalContext();
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [selectedAd, setSelectedAd] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,19 +40,7 @@ const Profile = () => {
     fetchAdsData();
   }, []);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const currentUser = await getCurrentUser();
-        if (currentUser) {
-          setUserId(currentUser.userId);
-        }
-      } catch (error) {
-        console.error('Błąd pobierania danych użytkownika:', error);
-      }
-    };
-    fetchUserData();
-  }, []);
+
 
 
   const logout = async () => {
@@ -62,7 +48,7 @@ const Profile = () => {
       await signOut();
       setUser(null);
       setIsLogged(false);
-      router.replace("/sign-in");
+    
     } catch (error) {
       console.error("Błąd podczas wylogowania:", error.message);
     }
@@ -132,8 +118,8 @@ const Profile = () => {
             source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
           />
           <View>
-            <Text style={styles.username}>{username}</Text>
-            <Text style={styles.email}>{email}</Text>
+            <Text style={styles.username}>{user.username}</Text>
+            <Text style={styles.email}>{user.email}</Text>
           </View>
         </View>
         <View style={{alignItems:'center'}}>
@@ -159,9 +145,9 @@ const Profile = () => {
           source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
         />
 
-        <UserInfo label="Nazwa użytkownika" value={username} />
-        <UserInfo label="Email" value={email} />
-        <UserInfo label="Numer telefonu" value={phonenumber} />
+        <UserInfo label="Nazwa użytkownika" value={user.username} />
+        <UserInfo label="Email" value={user.email} />
+        <UserInfo label="Numer telefonu" value={user.phonenumber} />
 
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
       </ScreenContainer>
@@ -208,8 +194,6 @@ const Profile = () => {
               fontWeight: '600',
               left: 15,
             }} />
-           
-    
           
             <View style={{alignItems:'center',marginBottom:10}}>
             </View> 
