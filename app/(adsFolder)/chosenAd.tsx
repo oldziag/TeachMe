@@ -57,7 +57,7 @@ const chosenAd = () => {
               fontWeight: '600',
               left: 15,
             }}
-             onPress={() => router.push({ pathname: '../ads', params: { category: initialCategory } })}
+             onPress={() => router.push({ pathname: '../ads'})}
           />
           
           <View style={{ alignItems: 'center', marginBottom: 10 }}>
@@ -121,7 +121,12 @@ const chosenAd = () => {
           <Text style={{ paddingBottom: 15, fontSize: 18, color: 'white' }}>
             {adDetails?.price} zł/godzinę
           </Text>
-
+          <Text style={{ fontSize: 21, fontWeight: '600', marginTop: 90, color: 'white' }}>
+            Poziom:{'\n'}
+          </Text>
+          <Text style={{ paddingBottom: 15, fontSize: 18, color: 'white' }}>
+            {adDetails?.level} 
+          </Text>
          
           <Text style={{ fontSize: 21, fontWeight: '600', color: 'white', paddingTop: 50 }}>
             Data dodania:{'\n'}

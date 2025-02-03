@@ -1,17 +1,22 @@
 import { StyleSheet, Text, View, FlatList, TouchableWithoutFeedback, ScrollView } from 'react-native';
-import { useLocalSearchParams,  router } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { getAds } from 'lib/appwrite';
-
+import { Ionicons } from '@expo/vector-icons';
 const AdsScreen = () => {
   const { category: initialCategory } = useLocalSearchParams<{ category?: string }>();
   const [category, setCategory] = useState<string | undefined>(initialCategory);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [selectedAd, setSelectedAd] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const filteredAds = announcements.filter((item) => !category || item.category === category);
-  const adCount = filteredAds.length;
-  
+  const [level, setLevel] = useState<string | undefined>(undefined);
+
+  const filteredAds = announcements.filter((item) => {
+    const isCategoryMatch = !category || item.category === category;
+    const isLevelMatch = !level || item.level === level;
+    return isCategoryMatch && isLevelMatch;
+  });
+
   // Ładowanie ogłoszeń
   useEffect(() => {
     const fetchAdsData = async () => {
@@ -27,31 +32,51 @@ const AdsScreen = () => {
     fetchAdsData();
   }, []);
 
+
+  const resetLevel = () => {
+    setLevel(undefined);  
+  };
+
   return (
     <View style={styles.container}>
-     
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{category} ({adCount})</Text>
+      <Ionicons
+            name="arrow-undo"
+            style={{
+              alignSelf:'flex-start',
+              color: '#b49fbf',
+              fontSize: 40,
+              fontWeight: '600',
+              left: 15,
+            }}
+             onPress={() => router.push({ pathname: '../home'})}
+          />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-          {['Szkoła podstawowa', 'Szkoła ponadpodstawowa', 'Szkoła policealna'].map((level, index) => (
-            <View key={index} style={styles.categoryItem}>
-              <Text style={styles.categoryText}>{level}</Text>
+          <TouchableWithoutFeedback onPress={resetLevel}>
+            <View style={[styles.categoryItem, !level && styles.selectedCategory]}>
+              <Text style={[styles.categoryText, !level && styles.selectedText]}>Wszystkie</Text>
             </View>
+          </TouchableWithoutFeedback>
+          {['Szkoła podstawowa', 'Szkoła ponadpodstawowa', 'Szkoła policealna'].map((levelName, index) => (
+            <TouchableWithoutFeedback key={index} onPress={() => setLevel(levelName)}>
+              <View style={[styles.categoryItem, level === levelName && styles.selectedCategory]}>
+                <Text style={[styles.categoryText, level === levelName && styles.selectedText]}>{levelName}</Text>
+              </View>
+            </TouchableWithoutFeedback>
           ))}
         </ScrollView>
       </View>
 
-    
-    <FlatList
-      data={announcements.filter((item) => !category || item.category === category)}
-      keyExtractor={(item) => item.$id}
+      <FlatList
+        data={filteredAds}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <TouchableWithoutFeedback
             onPress={() => {
               setSelectedAd(item);
               router.push({
                 pathname: '../chosenAd',
-                params: { selectedAd: item.$id, category: category }
+                params: { selectedAd: item.$id, category: category, level: level }
               });
             }}
           >
@@ -62,17 +87,11 @@ const AdsScreen = () => {
           </TouchableWithoutFeedback>
         )}
         ListEmptyComponent={
-          !loading && (
-            <Text style={styles.emptyText}>Brak ogłoszeń dla tej kategorii</Text>
-          )
+          !loading && <Text style={styles.emptyText}>Brak ogłoszeń dla tej kategorii i poziomu</Text>
         }
         contentContainerStyle={styles.listContainer}
       />
-
-      
-      <Text style={styles.backText} onPress={() => router.push({ pathname: '../home' })}>
-        Powrót
-      </Text>
+      <View style={{padding:40}}></View>
     </View>
   );
 };
@@ -87,38 +106,37 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     width: '100%',
-    backgroundColor: '#bfa7cc',
+    backgroundColor: 'black',
     alignItems: 'center',
     borderBottomLeftRadius: 15,
-    borderBottomRightRadius:15,
-    paddingBottom:20,
-    paddingTop:60,
-  
-  },
-  headerText: {
-    marginLeft:23,
-    fontSize: 20,
-    color: 'black',
-    fontWeight: '400',
+    borderBottomRightRadius: 15,
+    paddingBottom: 20,
+    paddingTop: 60,
   },
   categoryScroll: {
     marginTop: 10,
     paddingHorizontal: 10,
   },
   categoryItem: {
-    backgroundColor: '#b49fbf',
+    backgroundColor: 'black',
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius:18,
+    borderRadius: 18,
     marginHorizontal: 8,
-    borderWidth:2,
-    borderColor:'black',
+    borderWidth: 2,
+    borderColor: '#b49fbf',
   },
   categoryText: {
-    color: 'black',
-    fontWeight:500,
+    color: '#b49fbf',
+    fontWeight: '500',
     fontSize: 16,
     textAlign: 'center',
+  },
+  selectedCategory: {
+    backgroundColor: '#b49fbf',
+  },
+  selectedText: {
+    color: 'black',
   },
   listContainer: {
     paddingVertical: 20,
@@ -126,13 +144,14 @@ const styles = StyleSheet.create({
   },
   adCard: {
     backgroundColor: 'white',
-    borderRadius: 15,
+    width:370,
+    borderRadius: 19,
     padding: 15,
     marginBottom: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
+    shadowColor: 'white',
+    shadowOpacity: 0.7,
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 4,
   },
   titleText: {
     fontSize: 20,
@@ -150,10 +169,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  backText: {
-    color: '#1c9e92',
-    fontSize: 22,
-    marginVertical: 20,
-    fontWeight: '500',
-  },
+
 });
