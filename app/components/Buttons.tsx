@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 type ButtonProps = {
   label: string,
-  theme?: 'primary' | 'secondary' | 'tertiary' |'napis'|'start',
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'napis' | 'start',
   onPress?: () => void,
   children?: ReactNode,
   style?: StyleProp<ViewStyle>,

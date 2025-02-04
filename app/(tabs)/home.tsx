@@ -2,7 +2,7 @@ import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView, Image } f
 import React from 'react';
 import ButtonComponent from '@/components/Buttons';
 import { router } from 'expo-router';
-import SearchBox from '#/app/components/SearchBox';
+import SearchBox from '@/components/SearchBox';
 
 
 export default function Home() {
