@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList,
-  TextInput
+  TextInput, Pressable
 } from 'react-native';
 import { useGlobalContext } from "#/context/GlobalProvider";
-import { signOut, getAds,updateAd, deleteAd } from '#/lib/appwrite';
+import { signOut, getAds,updateAd, deleteAd, setAvatar } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
 
 
@@ -107,16 +107,24 @@ const Profile = () => {
     }
   };
 
+  function updateAvatar() {
+    const link = prompt("podaj link do obrazu");
+    setAvatar(user.$id, link);
+    setUser(user)
+  }
 
   if (currentScreen === 'profil') {
     return (
       <ScreenContainer>
         <View style={{backgroundColor:'black', alignItems:'center'}}>
         <View style={styles.profileHeader}>
-          <Image
-            style={styles.image}
-            source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
-          />
+          <Pressable onPress={updateAvatar}>
+            <Image
+              style={styles.image}
+              source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
+            />
+          </Pressable>
+
           <View>
             <Text style={styles.username}>{user.username}</Text>
             <Text style={styles.email}>{user.email}</Text>
