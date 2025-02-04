@@ -163,7 +163,7 @@ const Profile = () => {
   if (currentScreen === 'ogloszenia') {
     return (
       
-        <View style={{alignItems:'center',width:'100%',backgroundColor:'black',paddingTop:15}}>
+        <View style={{alignItems:'center',width:'100%', height: "100%", backgroundColor:'black', paddingTop:15}}>
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
         <FlatList style={{marginTop:20,marginBottom:110}}
           data={announcements.filter((item) => item.userId === user.userId)}
@@ -188,7 +188,7 @@ const Profile = () => {
   if (currentScreen === 'AdView') {
     return (
       <ScrollView>
-           <View style={{ flex: 1 ,backgroundColor:'black'}}>
+           <View style={{ flex: 1, backgroundColor:'black'}}>
            <View style={styles.adCard2}>
           <Ionicons
             name='arrow-undo'
