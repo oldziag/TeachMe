@@ -112,8 +112,7 @@ const Profile = () => {
 
   if (currentScreen === 'profil') {
     return (
-      <ScreenContainer>
-        <View style={{backgroundColor:'black', alignItems:'center'}}>
+      <View style={[styles.background, { alignItems: "center" }]}>
         <View style={styles.profileHeader}>
           <Pressable onPress={updateAvatar}>
             <Image
@@ -136,15 +135,14 @@ const Profile = () => {
         <TouchableOpacity style={styles.logout} onPress={logout}>
           <Text style={styles.text}>Wyloguj się</Text>
         </TouchableOpacity>
-        </View>
-      </ScreenContainer>
+      </View>
     );
   }
 
   
   if (currentScreen === 'dane') {
     return (
-      <ScreenContainer>
+      <View style={styles.background}>
         <Image
           style={styles.bigAvatar}
           source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
@@ -155,7 +153,7 @@ const Profile = () => {
         <UserInfo label="Numer telefonu" value={user.phonenumber} />
 
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
-      </ScreenContainer>
+      </View>
     );
   }
 
@@ -163,7 +161,7 @@ const Profile = () => {
   if (currentScreen === 'ogloszenia') {
     return (
       
-        <View style={{alignItems:'center',width:'100%', height: "100%", backgroundColor:'black', paddingTop:15}}>
+        <View style={[styles.background, {alignItems:'center'}]}>
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
         <FlatList style={{marginTop:20,marginBottom:110}}
           data={announcements.filter((item) => item.userId === user.userId)}
@@ -418,6 +416,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
      marginBottom: 10
   },
+  background: {
+    backgroundColor: "black",
+    height: "100%",
+    padding: 25
+  }
 });
 
 export default Profile;
