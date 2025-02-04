@@ -5,7 +5,7 @@ import {
   TextInput, Pressable
 } from 'react-native';
 import { useGlobalContext } from "#/context/GlobalProvider";
-import { signOut, getAds,updateAd, deleteAd, setAvatar } from '#/lib/appwrite';
+import { signOut, getAds,updateAd, deleteAd, setAvatar, getCurrentUser } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
 
 
@@ -39,9 +39,6 @@ const Profile = () => {
   useEffect(() => {
     fetchAdsData();
   }, []);
-
-
-
 
   const logout = async () => {
     try {
@@ -110,7 +107,7 @@ const Profile = () => {
   function updateAvatar() {
     const link = prompt("podaj link do obrazu");
     setAvatar(user.$id, link);
-    setUser(user)
+    setUser(getCurrentUser());
   }
 
   if (currentScreen === 'profil') {
