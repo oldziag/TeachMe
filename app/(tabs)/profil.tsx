@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList,
-  TextInput, Pressable
+  KeyboardAvoidingView, Platform, Pressable, Keyboard, FlatList,
+  TextInput
 } from 'react-native';
 import { useGlobalContext } from "#/context/GlobalProvider";
 import { signOut, getAds,updateAd, deleteAd, setAvatar, getCurrentUser } from '#/lib/appwrite';
@@ -169,7 +169,7 @@ const Profile = () => {
           data={announcements.filter((item) => item.userId === user.userId)}
           keyExtractor={(item) => item.$id}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback
+            <Pressable
               onPress={() => {
                 setSelectedAd(item);
                 setCurrentScreen('AdView');
@@ -178,7 +178,7 @@ const Profile = () => {
                 <Text style={styles.titleText}>{item.title}</Text>
                 <Text style={{ fontSize: 14 }}>{new Date(item.date).toLocaleDateString()}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           )}
         />
         </View>
@@ -288,11 +288,11 @@ const Profile = () => {
 
 const ScreenContainer = ({ children }: { children: React.ReactNode }) => (
   <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, }}>
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <Pressable onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         {children}
       </ScrollView>
-    </TouchableWithoutFeedback>
+    </Pressable>
   </KeyboardAvoidingView>
 );
 
