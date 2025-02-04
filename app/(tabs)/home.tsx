@@ -1,26 +1,16 @@
-import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
+import React from 'react';
 import ButtonComponent from '@/components/Buttons';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons'; 
+import SearchBox from '#/app/components/SearchBox';
 
 
 export default function Home() {
     return (
       <View style={styles.container}>
-        <View style={{ width: '99%' }}>
-          <TextInput
-            style={styles.input}
-            placeholder="Szukaj"
-            placeholderTextColor="gray"
-          />
-          <Ionicons 
-            name="search" 
-            size={21} 
-            color="gray" 
-            style={styles.icon} 
-          />
-        </View>  
+
+        <SearchBox />
+
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
           {[
             { name: 'Matematyka', image: require('assets/images/matematyka.png') },
@@ -60,30 +50,12 @@ export default function Home() {
     );
   }
 
-  
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 90,
     backgroundColor: '#000000',
     alignItems: 'center',
-  },
-  input: {
-    backgroundColor: 'white',
-    height: 50,
-    borderRadius: 18,
-    fontSize: 18,
-    marginBottom: 20,
-    padding: 20,
-    width: '99%',
-  },
-  icon: {
-    position: 'absolute',
-    right: 17,
-    top: 15
   },
   imageScroll: {
     width: '100%',
