@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList,
   TextInput
 } from 'react-native';
+import {router} from 'expo-router';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { signOut, getCurrentUser, getAds,updateAd, deleteAd } from '../../lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -126,7 +127,7 @@ const Profile = () => {
           <ProfileButton label="Twoje dane" onPress={() => setCurrentScreen('dane')} />
           <ProfileButton label="Twoje ogłoszenia" onPress={() => setCurrentScreen('ogloszenia')} />
           <ProfileButton label="Uczniowie i korepetytorzy" />
-          <ProfileButton label="Kalendarz zajęć" onPress={() => setCurrentScreen('kalendarz')} />
+          <ProfileButton label="Kalendarz zajęć" onPress={() => router.replace("../calendar")} />
         </View>
         <TouchableOpacity style={styles.logout} onPress={logout}>
           <Text style={styles.text}>Wyloguj się</Text>

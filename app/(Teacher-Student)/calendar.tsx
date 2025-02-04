@@ -1,9 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, ScrollView, TextInput } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { View, StyleSheet, Text, TextInput,ScrollView } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { getEvents, createEvent, getUsers, getUsername, getAvatar } from 'lib/appwrite';
 import { useGlobalContext } from "../../context/GlobalProvider";
 import DropDownPicker from 'react-native-dropdown-picker';
+import {router} from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+
+
+LocaleConfig.locales['pl'] = {
+    monthNames: [
+      'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+      'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+    ],
+    monthNamesShort: [
+      'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze',
+      'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'
+    ],
+    dayNames: [
+      'Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'
+    ],
+    dayNamesShort: ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'],
+    today: 'Dziś'
+  };
+LocaleConfig.defaultLocale = 'pl';  
+
 
 export default function CalendarScreen() {
   const [selectedDate, setSelectedDate] = useState('');
@@ -21,7 +42,6 @@ export default function CalendarScreen() {
   type User = {
     userId: string;
     username: string;
-    avatar: string;
   };
 
   useEffect(() => {
@@ -43,6 +63,7 @@ export default function CalendarScreen() {
 
     fetchUsers();
   }, []);
+
 
   const create = async () => {
     if (!title || !selectedDate || !hour || !selectedUser) {
@@ -82,6 +103,7 @@ export default function CalendarScreen() {
     }
   }, [selectedDate]);
 
+
   useEffect(() => {
     const fetchEventsData = async () => {
       try {
@@ -93,7 +115,6 @@ export default function CalendarScreen() {
     };
     fetchEventsData();
   }, []);
-
   const polishMonthNames = [
     'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
     'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
@@ -102,16 +123,28 @@ export default function CalendarScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.calendarContainer}>
+      <Ionicons
+            name="arrow-undo"
+            style={{
+              color: '#1c9e92',
+              fontSize: 30,
+              fontWeight: '600',
+              left: 15,
+            }}
+            onPress={() => {
+                    router.push({
+                    pathname: '../messageList', });}}
+        />
+        
         <Calendar
           onDayPress={(day) => setSelectedDate(day.dateString)}
-          markedDates={{
-            [selectedDate]: { selected: true, selectedColor: 'black' },
-          }}
-          renderHeader={(date) => (
-            <Text style={styles.headerText}>
-              {polishMonthNames[date.getMonth()]} {date.getFullYear()}
-            </Text>
-          )}
+          renderHeader={(date) => {
+          const month = LocaleConfig.locales['pl'].monthNames[date.getMonth()];
+          const year = date.getFullYear();
+          return (
+            <Text style={{ color: 'white', fontSize: 25 }}>{`${month} ${year}`}</Text>
+          );
+      }}
           firstDay={1}
           monthFormat={'yyyy MM'}
           theme={{
@@ -133,53 +166,54 @@ export default function CalendarScreen() {
             textDayHeaderFontSize: 21,
           }}
         />
-      </View>
-
-      {selectedDate ? <Text style={styles.selectedDate}> {selectedDate}</Text> : null}
-      <TextInput
-        style={styles.input}
-        placeholder="Zajęcia"
-        placeholderTextColor="gray"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Godzina"
-        placeholderTextColor="gray"
-        value={hour}
-        onChangeText={setHour}
-      />
-
-      <View style={{ zIndex: 2000 }}>
-        <DropDownPicker
-          open={openCategory}
-          value={category}
-          items={users.map((user) => ({
-            label: user.username,
-            value: user.userId,
-            avatar: user.avatar,
-          }))}
-          setOpen={setOpenCategory}
-          setValue={setCategory}
-          placeholder="Wybierz ucznia..."
-          placeholderStyle={{ color: 'gray', fontSize: 18 }}
-          containerStyle={styles.pickerContainer}
-          style={styles.picker}
-          dropDownContainerStyle={styles.dropDown}
-          mode="BADGE"
-          onChangeValue={(value) => {
-            const selected = users.find((user) => user.userId === value);
-            setSelectedUser(selected || null);
-          }}
+        </View>
+        <View style={styles.selectedDateContainer}>  
+            <Text style={[  styles.selectedDate, !selectedDate && styles.defaultDateText]}>
+                {selectedDate ? selectedDate : 'Wybierz datę'}
+            </Text>
+        </View>
+        <TextInput
+            style={styles.input}
+            placeholder="Zajęcia"
+            placeholderTextColor="gray"
+            value={title}
+            onChangeText={setTitle}
         />
-        <Text
-          style={styles.addEventButton}
-          onPress={create}>
-          Dodaj zajęcia
-        </Text>
+        <TextInput
+            style={styles.input}
+            placeholder="Godzina"
+            placeholderTextColor="gray"
+            value={hour}
+            onChangeText={setHour}
+        />
+
+        <View style={{ zIndex: 2000 }}>
+            <DropDownPicker
+                open={openCategory}
+                value={category}
+                items={users.map((user) => ({
+                    label: user.username,
+                    value: user.userId,
+                }))}
+                setOpen={setOpenCategory}
+                setValue={setCategory}
+                placeholder="Wybierz ucznia..."
+                placeholderStyle={{ color: 'gray', fontSize: 19 }}
+                containerStyle={styles.pickerContainer}
+                style={styles.picker}
+                dropDownContainerStyle={styles.dropDown}
+                mode="BADGE"
+                onChangeValue={(value) => {
+                    const selected = users.find((user) => user.userId === value);
+                    setSelectedUser(selected || null);
+                }}
+            />
+     
+
+
       </View>
-    </ScrollView>
+      </ScrollView>
+
   );
 }
 
@@ -189,39 +223,45 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     width: '100%',
     height: '100%',
-    paddingTop: 50,
+    paddingTop: 30,
   },
   input: {
     backgroundColor: 'white',
     marginTop: 20,
     width: 270,
+    fontSize:19,
     height: 50,
     alignSelf: 'center',
     borderRadius: 18,
     paddingLeft: 10,
   },
   calendarContainer: {
+    paddingTop:20,
     flex: 1,
     width: '100%',
     paddingHorizontal: 10,
+    paddingBottom:30
   },
-  headerText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 10,
+  selectedDateContainer:{
+    backgroundColor: 'white',
+    justifyContent:'center',
+    width: 270,
+    fontSize:19,
+    height: 50,
+    alignSelf: 'center',
+    borderRadius: 18,
+    paddingLeft: 10,
+   
   },
   selectedDate: {
-    marginTop: 70,
-    fontSize: 18,
-    textAlign: 'center',
-    color: 'white',
+    fontSize: 19,
+    color:'black'
   },
   pickerContainer: {
     width: 270,
     alignSelf: 'center',
-    marginTop: 30,
+    marginTop: 20,
+    marginBottom:90,
   },
   picker: {
     backgroundColor: 'white',
@@ -238,4 +278,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 30,
   },
+  defaultDateText: {
+    fontSize: 19,
+    color:'gray'
+
+  }, 
 });

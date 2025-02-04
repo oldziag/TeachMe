@@ -61,7 +61,7 @@ function SearchBox() {
               value={text}
               onChangeText={newText => setText(newText)}
               onFocus={() => setIsSelected(true)}
-              onBlur={() => setIsSelected(false)}
+         
           />
           <Ionicons 
               name="search" 
@@ -80,8 +80,8 @@ function SearchBox() {
             renderItem={({ item }) => (
               <View>
                 <Text style={{ color: 'black', fontSize:20, marginBottom:20,fontWeight:500}} 
-                
                  onPress={() => {
+  
                               setSelectedAd(item);
                               router.push({
                                 pathname: '../chosenAd',
