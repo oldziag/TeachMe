@@ -44,7 +44,7 @@ const AdsScreen = () => {
             name="arrow-undo"
             style={{
               alignSelf:'flex-start',
-              color: '#b49fbf',
+              color: '#1c9e92',
               fontSize: 40,
               fontWeight: '600',
               left: 15,
@@ -124,16 +124,18 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     marginHorizontal: 8,
     borderWidth: 2,
-    borderColor: '#b49fbf',
+    borderColor: '#1c9e92',
   },
   categoryText: {
-    color: '#b49fbf',
+    color: '#1c9e92',
     fontWeight: '500',
     fontSize: 16,
     textAlign: 'center',
   },
   selectedCategory: {
-    backgroundColor: '#b49fbf',
+    borderWidth: 2,
+    borderColor: '#8a9c96',
+    backgroundColor: '#8a9c96',
   },
   selectedText: {
     color: 'black',
