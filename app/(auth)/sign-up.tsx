@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, Image, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons'; 
 import { createUser } from "#/lib/appwrite"; 

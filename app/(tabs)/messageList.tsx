@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getMessages, getUsers, getUsername, getAvatar, Message } from 'lib/appwrite'; 
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { useGlobalContext } from "#/context/GlobalProvider";
 import { Ionicons } from '@expo/vector-icons';
 
 type User = {

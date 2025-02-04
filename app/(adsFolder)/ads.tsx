@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, FlatList, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { getAds } from 'lib/appwrite';
+import { getAds } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons';
+
 const AdsScreen = () => {
   const { category: initialCategory } = useLocalSearchParams<{ category?: string }>();
   const [category, setCategory] = useState<string | undefined>(initialCategory);

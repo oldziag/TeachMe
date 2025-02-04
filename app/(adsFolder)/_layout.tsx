@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { Redirect, router,Stack } from "expo-router"; 
+import { Stack } from "expo-router"; 
 
 const AdsLayout = () => {
   return (

@@ -2,14 +2,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ButtonComponent from '@/components/Buttons';
-import { Redirect, router } from "expo-router";
-import { useGlobalContext } from "../context/GlobalProvider";
-import { View, StyleSheet, TextInput, Text, FlatList, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
-import React, { useState, useEffect } from 'react';
-const logowanie = () => {
-
-  if ( isLogged) return <Redirect href="/home" />;}
-
+import { router } from "expo-router";
+import { View, StyleSheet, Text, Image } from 'react-native';
+import React from 'react';
 
 export default function Index() {
   return (

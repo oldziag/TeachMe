@@ -1,4 +1,4 @@
-import { createAd, getAccount } from "lib/appwrite.js"; 
+import { createAd, getAccount } from "#/lib/appwrite"; 
 import { View, StyleSheet, Text, TextInput, Alert, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 import ButtonComponent from '@/components/Buttons';

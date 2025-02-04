@@ -4,8 +4,8 @@ import {
   KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList,
   TextInput
 } from 'react-native';
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { signOut, getCurrentUser, getAds,updateAd, deleteAd } from '../../lib/appwrite';
+import { useGlobalContext } from "#/context/GlobalProvider";
+import { signOut, getAds,updateAd, deleteAd } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
 
 
@@ -115,7 +115,7 @@ const Profile = () => {
         <View style={styles.profileHeader}>
           <Image
             style={styles.image}
-            source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
+            source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
           />
           <View>
             <Text style={styles.username}>{user.username}</Text>
@@ -142,7 +142,7 @@ const Profile = () => {
       <ScreenContainer>
         <Image
           style={styles.bigAvatar}
-          source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
+          source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
         />
 
         <UserInfo label="Nazwa użytkownika" value={user.username} />
