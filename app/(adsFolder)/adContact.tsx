@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, router } from 'expo-router';
 import { getUsername, getMessages, Message } from 'lib/appwrite'; 
-import { useGlobalContext } from "../../context/GlobalProvider";
+import { useGlobalContext } from "#/context/GlobalProvider";
 import { Ionicons } from '@expo/vector-icons'; 
 
 const AdContact = () => {

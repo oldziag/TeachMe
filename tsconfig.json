@@ -6,7 +6,7 @@
     "isolatedModules": true,
     "baseUrl": ".",  
     "paths": {
-      "@/*": ["app-example/*"],
+      "@/*": ["app/*"],
       "#/*": ["./*"]
     }
   },

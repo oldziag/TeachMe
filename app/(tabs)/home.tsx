@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ScrollView, Image } from 'react-native';
 import React from 'react';
 import ButtonComponent from '@/components/Buttons';
 import { router } from 'expo-router';
-import SearchBox from '#/app/components/SearchBox';
+import SearchBox from '@/components/SearchBox';
 
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
             { name: 'J. Hiszpański', image: require('assets/images/hiszpanski.png') },
           ].map((category, index) => 
             (
-            <TouchableWithoutFeedback
+            <Pressable
               key={index}
               onPress={() => router.push({ pathname: '../ads', params: { category: category.name } })}
             >
@@ -31,7 +31,7 @@ export default function Home() {
                 <Image source={category.image} style={styles.image} />
                 <Text style={styles.categoryText}>{category.name}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           ))}
         </ScrollView>
     
