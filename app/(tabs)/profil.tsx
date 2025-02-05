@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, FlatList,
+  KeyboardAvoidingView, Platform, Pressable, Keyboard, FlatList,
   TextInput
 } from 'react-native';
 import {router} from 'expo-router';
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { signOut, getCurrentUser, getAds,updateAd, deleteAd } from '../../lib/appwrite';
+import { useGlobalContext } from "#/context/GlobalProvider";
+import { signOut, getAds,updateAd, deleteAd, setAvatar, getCurrentUser } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
 
 
@@ -40,9 +40,6 @@ const Profile = () => {
   useEffect(() => {
     fetchAdsData();
   }, []);
-
-
-
 
   const logout = async () => {
     try {
@@ -109,16 +106,23 @@ const Profile = () => {
     }
   };
 
+  function updateAvatar() {
+    const link = prompt("podaj link do obrazu");
+    setAvatar(user.$id, link);
+    setUser(getCurrentUser());
+  }
 
   if (currentScreen === 'profil') {
     return (
-      <ScreenContainer>
-        <View style={{backgroundColor:'black', alignItems:'center'}}>
+      <View style={[styles.background, { alignItems: "center" }]}>
         <View style={styles.profileHeader}>
-          <Image
-            style={styles.image}
-            source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
-          />
+          <Pressable onPress={updateAvatar}>
+            <Image
+              style={styles.image}
+              source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
+            />
+          </Pressable>
+
           <View>
             <Text style={styles.username}>{user.username}</Text>
             <Text style={styles.email}>{user.email}</Text>
@@ -133,18 +137,17 @@ const Profile = () => {
         <TouchableOpacity style={styles.logout} onPress={logout}>
           <Text style={styles.text}>Wyloguj się</Text>
         </TouchableOpacity>
-        </View>
-      </ScreenContainer>
+      </View>
     );
   }
 
   
   if (currentScreen === 'dane') {
     return (
-      <ScreenContainer>
+      <View style={styles.background}>
         <Image
           style={styles.bigAvatar}
-          source={user?.avatar ? { uri: user.avatar } : require('../../assets/images/profil3.png')}
+          source={user?.avatar ? { uri: user.avatar } : require('#/assets/images/profil3.png')}
         />
 
         <UserInfo label="Nazwa użytkownika" value={user.username} />
@@ -152,7 +155,7 @@ const Profile = () => {
         <UserInfo label="Numer telefonu" value={user.phonenumber} />
 
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
-      </ScreenContainer>
+      </View>
     );
   }
   if (currentScreen === 'kalendarz') {
@@ -177,13 +180,13 @@ const Profile = () => {
   if (currentScreen === 'ogloszenia') {
     return (
       
-        <View style={{alignItems:'center',width:'100%',backgroundColor:'black',paddingTop:15}}>
+        <View style={[styles.background, {alignItems:'center'}]}>
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
         <FlatList style={{marginTop:20,marginBottom:110}}
           data={announcements.filter((item) => item.userId === user.userId)}
           keyExtractor={(item) => item.$id}
           renderItem={({ item }) => (
-            <TouchableWithoutFeedback
+            <Pressable
               onPress={() => {
                 setSelectedAd(item);
                 setCurrentScreen('AdView');
@@ -192,7 +195,7 @@ const Profile = () => {
                 <Text style={styles.titleText}>{item.title}</Text>
                 <Text style={{ fontSize: 14 }}>{new Date(item.date).toLocaleDateString()}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           )}
         />
         </View>
@@ -202,7 +205,7 @@ const Profile = () => {
   if (currentScreen === 'AdView') {
     return (
       <ScrollView>
-           <View style={{ flex: 1 ,backgroundColor:'black'}}>
+           <View style={{ flex: 1, backgroundColor:'black'}}>
            <View style={styles.adCard2}>
           <Ionicons
             name='arrow-undo'
@@ -302,11 +305,11 @@ const Profile = () => {
 
 const ScreenContainer = ({ children }: { children: React.ReactNode }) => (
   <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1, }}>
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <Pressable onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
         {children}
       </ScrollView>
-    </TouchableWithoutFeedback>
+    </Pressable>
   </KeyboardAvoidingView>
 );
 
@@ -432,6 +435,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
      marginBottom: 10
   },
+  background: {
+    backgroundColor: "black",
+    height: "100%",
+    padding: 25
+  }
 });
 
 export default Profile;

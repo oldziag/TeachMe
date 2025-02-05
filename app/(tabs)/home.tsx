@@ -1,16 +1,18 @@
-import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, Text, Pressable, ScrollView, Image } from 'react-native';
 import React from 'react';
 import ButtonComponent from '@/components/Buttons';
 import { router } from 'expo-router';
-import SearchBox from '#/app/components/SearchBox';
-
+import SearchBox from '@/components/SearchBox';
+import IconSymbol from '@/components/ui/IconSymbol';
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function Home() {
     return (
-      <View style={styles.container}>
+      
+  <ScrollView  style={styles.Scrollcontainer}>  
+    <View style={styles.container}>
 
-        <SearchBox />
-
+      <SearchBox/>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
           {[
             { name: 'Matematyka', image: require('assets/images/matematyka.png') },
@@ -23,30 +25,29 @@ export default function Home() {
             { name: 'J. Hiszpański', image: require('assets/images/hiszpanski.png') },
           ].map((category, index) => 
             (
-            <TouchableWithoutFeedback
+            <Pressable
               key={index}
-              onPress={() => router.push({ pathname: '../ads', params: { category: category.name } })}
-            >
+              onPress={() => router.push({ pathname: '../ads', params: { category: category.name } })}>
               <View style={styles.categoryItem}>
                 <Image source={category.image} style={styles.image} />
                 <Text style={styles.categoryText}>{category.name}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           ))}
         </ScrollView>
     
-        <Text style={styles.motto}>
-          Zacznij teraz i dziel się swoją pasją do{' '}
-        <Text style={{ color: '#1c9e92', fontWeight: '600' }}>nauki!</Text>
-        </Text>
-        <View style={{ bottom:30 }}>
-          <ButtonComponent 
-            theme="start" 
-            label="Dodaj ogłoszenie" 
-            onPress={() => router.replace("../create_ad")} 
-          />
-        </View>
+        
+      <View style={{marginTop:20 ,width:'100%',paddingHorizontal:30}}>
+        <Text style={styles.hasla}>Szukasz pomocy w nauce? Odkryj tysiące<Text style={{color:'#1c9e92', fontWeight:'bold'}}> ogłoszeń</Text>  w jednym miejscu</Text> 
+        <Image  style={styles.images}source={require('#/assets/images/wyszukiwarka.png')}></Image>
+        <Text style={{...styles.hasla, textAlign:'right'}}>Podnieś swoje wyniki! <Text style={{color:'#1c9e92', fontWeight:'bold'}}>Korepetycje</Text> dopasowane do Twoich potrzeb</Text>
+        <Image  style={{...styles.images, width:250, alignSelf:'flex-end'}}source={require('#/assets/images/korki.png')}></Image>
+        <Text style={styles.hasla}>Dopasowane korepetycje dla każdego – niezależnie od poziomu twoich <Text style={{color:'#1c9e92', fontWeight:'bold'}}>umiejętności!</Text></Text>
+        <Image  style={{...styles.images, width:250, alignSelf:'flex-start'}}source={require('#/assets/images/level.png')}></Image>
+        <Text style={{...styles.hasla, fontSize:27, textAlign:'center', marginTop:40}}>Chcesz dzielić się wiedzą z innymi? Napisz ogłoszenie <Text style={{color:'#1c9e92', fontWeight:'bold'}}>już teraz!</Text></Text>
       </View>
+    </View>
+  </ScrollView>
     );
   }
 
@@ -75,18 +76,37 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     margin: 10,
   },
+  images:{
+
+    width:300,
+    height:150, 
+    alignSelf:'flex-start',
+    borderRadius:19, 
+  },
   motto: {
     color: 'white',
     fontSize: 24,
     textAlign: 'center',
-    position: 'absolute',
-    top: 450,
+
+  },
+  hasla: {
+    color: 'white',
+    fontSize: 21,
+    paddingBottom:30,
+    paddingTop:30,
+
   },
   categoryText: {
     color: 'white',
     fontSize: 16,
     marginTop: 5,
     textAlign: 'center',
+  },
+  Scrollcontainer: {
+    flex: 1,
+    backgroundColor: '#000',
+
+
   },
   
 });

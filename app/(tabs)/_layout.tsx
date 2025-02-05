@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SplashScreen, Tabs,Redirect } from 'expo-router';
-import { useFonts} from 'expo-font';
-import { StatusBar } from 'expo-status-bar'; 
-import Button from '@/components/Buttons';
+import { Tabs } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabsLayOut() {
 
@@ -59,6 +57,24 @@ export default function TabsLayOut() {
                         focused
                           ? "mail"
                           : "mail-outline"
+                      }
+                      color={color}
+                      size={30}
+                    />
+                  ),
+                }}
+              />
+              <Tabs.Screen
+                name="addAd"
+                options={{
+                  tabBarLabel: "Dodaj ogłoszenie",
+                  headerShown:false,
+                  tabBarIcon: ({ focused, color }) => (
+                    <Ionicons
+                      name={
+                        focused
+                          ? "add-circle"
+                          : "add-circle-outline"
                       }
                       color={color}
                       size={30}

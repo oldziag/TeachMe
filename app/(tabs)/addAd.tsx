@@ -58,7 +58,7 @@ export default function CreateAd() {
   };
 
   return (
-    <ScrollView   showsVerticalScrollIndicator={false} style={styles.container} >
+    <ScrollView style={styles.container}>
       <Text style={styles.heading}>Stwórz nowe ogłoszenie</Text>
 
       <TextInput
@@ -81,7 +81,6 @@ export default function CreateAd() {
    
       <View style={{ zIndex: 2000 }}>
         <DropDownPicker
-        
           open={openCategory}
           value={category}
           items={categories}

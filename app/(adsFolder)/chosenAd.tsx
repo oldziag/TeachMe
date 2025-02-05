@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { getAds, getUsername, getAvatar } from 'lib/appwrite'; 
+import { getAds, getUsername, getAvatar } from '#/lib/appwrite'; 
 
 const chosenAd = () => {
   const [adDetails, setAdDetails] = useState<any>(null);

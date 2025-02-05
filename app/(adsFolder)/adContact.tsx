@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, FlatList, TextInput } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, router } from 'expo-router';
-import { getUsername, getMessages, Message } from 'lib/appwrite'; 
-import { useGlobalContext } from "../../context/GlobalProvider";
-import { Ionicons } from '@expo/vector-icons'; 
+import { getUsername, getMessages, Message, getAvatar } from 'lib/appwrite'; // Załóżmy, że masz funkcję getAvatar
+import { useGlobalContext } from "#/context/GlobalProvider";
+import { Ionicons } from '@expo/vector-icons';
 
 const AdContact = () => {
   const { adCreator } = useLocalSearchParams<{ adCreator: string }>();
@@ -11,10 +11,12 @@ const AdContact = () => {
   const [messages, setMessages] = useState<any[]>([]);
   const { user } = useGlobalContext();
   const [username, setUsername] = useState<string>("");
+  const [avatar, setAvatar] = useState<string>("");
 
   useEffect(() => {
     if (!user?.userId || !adCreator) return;
 
+  
     const fetchMessages = async () => {
       try {
         const msgs = await getMessages(user.userId, adCreator);
@@ -24,22 +26,26 @@ const AdContact = () => {
       }
     };
 
-    const fetchUsername = async () => {
+  
+    const fetchUsernameAndAvatar = async () => {
       try {
         const name = await getUsername(adCreator);
+        const userAvatar = await getAvatar(adCreator); 
         setUsername(name);
+        setAvatar(userAvatar); 
       } catch (error) {
-        console.error("Błąd pobierania nazwy użytkownika:", error);
+        console.error("Błąd pobierania danych użytkownika:", error);
       }
     };
 
     fetchMessages();
-    fetchUsername();
+    fetchUsernameAndAvatar();
 
     const interval = setInterval(fetchMessages, 1000);
     return () => clearInterval(interval);
   }, [user?.userId, adCreator]);
 
+ 
   const sendMessage = async () => {
     if (!user?.userId || !adCreator || !messageText.trim()) {
       console.error("Brak wymaganych danych do wysłania wiadomości.");
@@ -47,111 +53,85 @@ const AdContact = () => {
     }
     try {
       await Message(user.userId, adCreator, messageText);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { message: messageText, senderId: user.userId }, 
+      ]);
       setMessageText(""); 
     } catch (error) {
       console.error("Błąd podczas wysyłania wiadomości:", error);
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <Ionicons
-        name="arrow-undo"
-        style={{
-          color: '#1c9e92',
-          fontSize: 40,
-          fontWeight: '600',
-          left: -160
-        }}
-        onPress={() => router.back()} // Dodano obsługę cofania
-      />
 
-      <Text style={styles.username}>{username}</Text>
+  const ChatHeader = () => (
+    <View style={styles.headerContainer}>
+      <TouchableOpacity style={styles.backButton}>
+        <Ionicons name="arrow-back" size={30} color="white" onPress={() => router.back()} /> 
+      </TouchableOpacity>
+      <Text style={styles.chatHeaderText}>{username}</Text>
+      <Text style={{ fontSize: 20, color: 'white', fontWeight: 500, margin: 5 }} onPress={() => router.replace("../calendar")}>
+        Zajęcia
+      </Text>
+      <Ionicons name="calendar" color={'#1c9e92'} size={20} />
+    </View>
+  );
 
+
+  const MessageItem = ({ item }: { item: any }) => {
+    const isSent = item.senderId === user.userId;
+    return (
+      <View style={[styles.messageContainer, isSent ? styles.sentContainer : styles.receivedContainer]}>
+        {!isSent && avatar && <Image source={{ uri: avatar }} style={styles.avatarMessage} />}
+        <View style={[styles.message, isSent ? styles.sent : styles.received]}>
+          <Text style={styles.messageText}>{item.message}</Text>
+        </View>
+        {isSent && avatar && <Image source={{ uri: avatar }} style={styles.avatarMessage} />}
+      </View>
+    );
+  };
+
+  return  (
+    <View style={{ flex: 1, backgroundColor: '#000', padding: 20}}>
+      <ChatHeader />
       <FlatList
-        style={{ width: '100%', height: '90%' }}
-        data={messages}
-        keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.messageBubble,
-              item.senderId === user.userId ? styles.sentMessage : styles.receivedMessage
-            ]}
-          >
-            <Text style={{ color: 'black' }}>{item.message}</Text>
-          </View>
-        )}
-        inverted
+        data={[...messages].reverse()}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => <MessageItem item={item} />}
       />
-
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.sendMess}
+          style={styles.input}
           placeholder="Napisz wiadomość..."
           placeholderTextColor="gray"
           value={messageText}
-          onChangeText={(text) => setMessageText(text)}
+          onChangeText={setMessageText}
         />
-        <Ionicons
-          name="send"
-          size={24}
-          color="white"
-          onPress={sendMessage}
-          style={styles.sendIcon}
-        />
+        <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+          <Ionicons name="send" size={25} color="black" />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 90,
-    backgroundColor: '#000000',
-    alignItems: 'center',
-  },
-  username: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  sendMess: {
-    backgroundColor: 'white',
-    width: '83%',
-    height: 52,
-    borderRadius: 17,
-    paddingHorizontal: 10,
-    flex: 1,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '90%',
-    marginBottom: 20,
-    backgroundColor: 'white',
-    borderRadius: 18,
-    paddingHorizontal: 10,
-  },
-  sendIcon: {
-    marginLeft: 10,
-  },
-  messageBubble: {
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 16,
-    maxWidth: '75%',
-  },
-  sentMessage: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#1c9e92',
-  },
-  receivedMessage: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'white',
-  },
+  container: { flex: 1, backgroundColor: '#000', padding: 20 },
+  header: { color: 'white', paddingTop: 40, fontSize: 26, paddingBottom: 30, alignSelf: 'center' },
+  headerContainer: { flexDirection: 'row', alignItems: 'center', paddingVertical: 20 },
+  chatHeaderText: { color: 'white', fontSize: 23, textAlign: 'center', flex: 1 },
+  backButton: { padding: 10 },
+  avatarMessage: { width: 35, height: 35, borderRadius: 20, marginHorizontal: 8 },
+  messageContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 5 },
+  sentContainer: { alignSelf: 'flex-end' },
+  receivedContainer: { alignSelf: 'flex-start' },
+  message: { padding: 13, borderRadius: 10, maxWidth: '80%' },
+  sent: { backgroundColor: 'white', alignSelf: 'flex-end' },
+  received: { backgroundColor: '#1c9e92', alignSelf: 'flex-start' },
+  messageText: { color: 'black', fontSize: 16 },
+  inputContainer: { flexDirection: 'row', alignItems: 'center', padding: 10, backgroundColor: 'white', borderRadius: 17 },
+  input: { flex: 1, backgroundColor: 'white', color: 'black', padding: 10, fontSize: 17 },
+  sendButton: { padding: 10 },
 });
 
 export default AdContact;

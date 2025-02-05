@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, FlatList, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable, ScrollView } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { getAds } from 'lib/appwrite';
+import { getAds } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons';
+
 const AdsScreen = () => {
   const { category: initialCategory } = useLocalSearchParams<{ category?: string }>();
   const [category, setCategory] = useState<string | undefined>(initialCategory);
@@ -52,17 +53,17 @@ const AdsScreen = () => {
              onPress={() => router.push({ pathname: '../home'})}
           />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-          <TouchableWithoutFeedback onPress={resetLevel}>
+          <Pressable onPress={resetLevel}>
             <View style={[styles.categoryItem, !level && styles.selectedCategory]}>
               <Text style={[styles.categoryText, !level && styles.selectedText]}>Wszystkie</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </Pressable>
           {['Szkoła podstawowa', 'Szkoła ponadpodstawowa', 'Szkoła policealna'].map((levelName, index) => (
-            <TouchableWithoutFeedback key={index} onPress={() => setLevel(levelName)}>
+            <Pressable key={index} onPress={() => setLevel(levelName)}>
               <View style={[styles.categoryItem, level === levelName && styles.selectedCategory]}>
                 <Text style={[styles.categoryText, level === levelName && styles.selectedText]}>{levelName}</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           ))}
         </ScrollView>
       </View>
@@ -71,7 +72,7 @@ const AdsScreen = () => {
         data={filteredAds}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <TouchableWithoutFeedback
+          <Pressable
             onPress={() => {
               setSelectedAd(item);
               router.push({
@@ -84,7 +85,7 @@ const AdsScreen = () => {
               <Text style={styles.titleText}>{item.title}</Text>
               <Text style={styles.dateText}>{new Date(item.date).toLocaleDateString()}</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </Pressable>
         )}
         ListEmptyComponent={
           !loading && <Text style={styles.emptyText}>Brak ogłoszeń dla tej kategorii i poziomu</Text>

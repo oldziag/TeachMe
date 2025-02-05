@@ -17,7 +17,6 @@ const SignIn = () => {
   });
 
   function updateAuthData<K extends keyof LoginData>(key: K, value: LoginData[K]) {
-    console.log(key, value)
     setAuthData({ ...authData, [key]: value })
   }
 
