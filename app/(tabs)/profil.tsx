@@ -49,6 +49,7 @@ const Profile = () => {
       await signOut();
       setUser(null);
       setIsLogged(false);
+      router.replace("../sign-in")
     
     } catch (error) {
       console.error("Błąd podczas wylogowania:", error.message);

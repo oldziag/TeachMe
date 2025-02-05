@@ -93,8 +93,10 @@ export default function ChatScreen() {
       <Text style={styles.chatHeaderText}>{selectedUser?.username}</Text>
         <Text style={{fontSize:20,color:'white',fontWeight:500,margin:5}} onPress={() => router.replace("../calendar")} >Zajęcia</Text>
         <Ionicons name="calendar" color={'#1c9e92'} size={20} />
-
     </View>
+
+    
+
   );
 
   // Styl wiadomości

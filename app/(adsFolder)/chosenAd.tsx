@@ -63,16 +63,14 @@ const chosenAd = () => {
               left: 15,
             }}
             onPress={() => {
-                
-                          router.push({
-                            pathname: '../ads',
-                            params: { category: adDetails.category }
-                          });
-                        }}
+              router.push({
+                pathname: '../ads',
+                params: { category: adDetails.category }
+              });
+            }}
           />
           
-          <View style={{ alignItems: 'center', marginBottom: 10 }}>
-           
+          <View style={{ alignItems: 'center', marginBottom: 10 }}> 
             {adDetails?.avatar && (
               <Image
                 source={{ uri: adDetails.avatar }}

@@ -68,7 +68,7 @@ export default function CreateAd() {
         value={title}
         onChangeText={setTitle}
       />
-
+      <Text style={{color:'white' ,marginBottom:15, fontSize:17}}>Uwaga! Wyszukiwania są sugerowane na podstawie opisu, zawrzyj w nim jak najwięcej szczegółów!</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
         placeholder="np. Jestem pasjonatem nauczania z 3-letnim doświadczeniem w nauczaniu matematyki i programowania. Specjalizuję się w upraszczaniu skomplikowanych tematów, dostosowując lekcje do Twoich potrzeb. Niezależnie od tego, czy masz trudności z algebrą, Pythonem czy przygotowaniem do egzaminów, jestem tutaj, aby pomóc Ci odnieść sukces. Moje lekcje są interaktywne i koncentrują się na praktycznym rozwiązywaniu problemów, aby budować Twoją pewność siebie i umiejętności. Pracujmy razem, aby osiągnąć Twoje cele! "

@@ -208,6 +208,7 @@ export default function CalendarScreen() {
                     setSelectedUser(selected || null);
                 }}
             />
+            <Text style={{color:'white',fontSize:20,alignSelf:'center', marginBottom:30}} onPress={create}>Dodaj zajęcia</Text>
      
 
 
