@@ -41,7 +41,12 @@ const chosenAd = () => {
   }, [selectedAd]);
 
   if (loading) {
-    return <Text>Ładowanie...</Text>;
+    return(
+      <View style={{backgroundColor:'black',alignItems:'center',justifyContent:'center', flex:1}}>
+      <Text style={{color:'white',fontSize:30}}>Ładowanie...</Text>
+      </View>
+    )
+   
   }
 
 
@@ -57,7 +62,13 @@ const chosenAd = () => {
               fontWeight: '600',
               left: 15,
             }}
-             onPress={() => router.push({ pathname: '../ads'})}
+            onPress={() => {
+                
+                          router.push({
+                            pathname: '../ads',
+                            params: { category: adDetails.category }
+                          });
+                        }}
           />
           
           <View style={{ alignItems: 'center', marginBottom: 10 }}>
@@ -87,9 +98,10 @@ const chosenAd = () => {
             )}
           </View>
 
-         
+         <View style={{alignItems:'center',paddingHorizontal:20}}>
           <Text
             style={{
+
               fontSize: 28,
               color: 'white',
               padding: 15,
@@ -138,7 +150,7 @@ const chosenAd = () => {
               day: 'numeric',
             })}
           </Text>
-
+          </View>
          
           <View
             style={{

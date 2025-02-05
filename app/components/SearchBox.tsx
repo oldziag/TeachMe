@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { getAds } from "#/lib/appwrite";
+import { useLocalSearchParams, router } from 'expo-router'
  
 function SearchBox() {
     const ref = useRef<TextInput | null>(null);
@@ -9,6 +10,7 @@ function SearchBox() {
  
     const [announcements, setAnnouncements] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
+    const [selectedAd, setSelectedAd] = useState("");
 
     const allAds = useRef([])
  
@@ -34,6 +36,8 @@ function SearchBox() {
       console.log(allAds.current)
       let zmiana = false;
  
+
+
       setAnnouncements(allAds.current.filter(a => {
         if (a.description.toLowerCase().includes(text.toLowerCase())) {
           zmiana = true;
@@ -44,10 +48,6 @@ function SearchBox() {
       if (!zmiana) {
         setAnnouncements([{ $id: -1, title: "Zacznij pisać, aby otrzymać sugestie" }]);
       }
- 
-      // announcements.forEach(a => {
-      //   console.log(a.description.toLowerCase().indexOf(text.toLowerCase()))
-      // })
  
     }, [text])
  
@@ -60,6 +60,8 @@ function SearchBox() {
               placeholderTextColor="gray"
               value={text}
               onChangeText={newText => setText(newText)}
+              onFocus={() => setIsSelected(true)}
+         
           />
           <Ionicons 
               name="search" 
@@ -77,7 +79,19 @@ function SearchBox() {
             keyExtractor={ ad => ad.$id }
             renderItem={({ item }) => (
               <View>
-                <Text style={{ color: 'white' }}>{item.title}</Text>
+                <Text style={{ color: 'black', fontSize:20, marginBottom:20,fontWeight:500}} 
+                 onPress={() => {
+  
+                              setSelectedAd(item);
+                              router.push({
+                                pathname: '../chosenAd',
+                                params: { selectedAd: item.$id}
+                              });
+                            }}>
+                {item.title}
+    
+                </Text>
+                
               </View>
             )}
           />
@@ -104,7 +118,7 @@ const styles = StyleSheet.create({
   dropdown: {
     position: "absolute",
     top: 150,
-    backgroundColor: "gray",
+    backgroundColor: "white",
     backdropFilter: "blur(16px)",
     padding: 10,
     zIndex: 2,

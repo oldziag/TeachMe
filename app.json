@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.oldziag.mynewproject",
-      "package":"com.jsm.teachme"
+      "package": "com.jsm.teachme"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +34,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

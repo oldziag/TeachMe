@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { getMessages, getUsers, getUsername, getAvatar, Message } from 'lib/appwrite'; 
 import { useGlobalContext } from "#/context/GlobalProvider";
 import { Ionicons } from '@expo/vector-icons';
+import{router} from 'expo-router';
 
 type User = {
   userId: string;
@@ -16,30 +17,33 @@ export default function ChatScreen() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [messageText, setMessageText] = useState<string>('');
+  const [isSelected, setIsSelected] = useState(false);
   
-  
-//Wyświetla  listę użytkowników z bazy
+  // Pobranie listy użytkowników (raz)
   useEffect(() => {
-    (async () => {
+    const fetchUsers = async () => {
       try {
         const usersData = await getUsers();
         const usersList = await Promise.all(
           usersData.map(async (u: any) => ({
             userId: u.userId,
             username: await getUsername(u.userId),
-            avatar: await getAvatar(u.userId),
+            avatar: u.avatar || await getAvatar(u.userId), 
           }))
         );
         setUsers(usersList);
       } catch (error) {
         console.error("Błąd pobierania użytkowników:", error);
       }
-    })();
+    };
+
+    fetchUsers();
   }, []);
 
-  //Pobiera wiadomości między zalogowanym użytkownikiem a tym, z którym wyświetla czat
+  // Pobiera wiadomości między użytkownikami
   useEffect(() => {
     if (!selectedUser) return;
+
     const fetchMessages = async () => {
       try {
         setMessages(await getMessages(user.userId, selectedUser.userId));
@@ -47,12 +51,11 @@ export default function ChatScreen() {
         console.error("Błąd pobierania wiadomości:", error);
       }
     };
+
     fetchMessages();
-    const interval = setInterval(fetchMessages, 1000);
-    return () => clearInterval(interval);
   }, [selectedUser]);
 
-  //Wysyłanie wiadomości
+  // Wysyłanie wiadomości
   const sendMessage = async () => {
     if (!messageText.trim() || !selectedUser) return;
     try {
@@ -63,7 +66,8 @@ export default function ChatScreen() {
     }
   };
 
-  //Okno do wybierania użytkowników
+ 
+  // Lista użytkowników
   const UserList = () => (
     <View>
       <Text style={styles.header}>Wiadomości</Text>
@@ -80,17 +84,20 @@ export default function ChatScreen() {
     </View>
   );
 
-  //Nagłówek wiadomości ( z kim prowadzisz konwersacje )
+  // Nagłówek czatu
   const ChatHeader = () => (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => setSelectedUser(null)} style={styles.backButton}>
         <Ionicons name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
       <Text style={styles.chatHeaderText}>{selectedUser?.username}</Text>
+        <Text style={{fontSize:20,color:'white',fontWeight:500,margin:5}} onPress={() => router.replace("../calendar")} >Zajęcia</Text>
+        <Ionicons name="calendar" color={'#1c9e92'} size={20} />
+
     </View>
   );
 
-  //Styl wyświetlania wiadomości
+  // Styl wiadomości
   const MessageItem = ({ item }: { item: any }) => {
     const isSent = item.senderId === user.userId;
     const sender = users.find((u) => u.userId === item.senderId);
@@ -105,7 +112,7 @@ export default function ChatScreen() {
     );
   };
 
-  //Ekran czatu
+  // Ekran czatu
   const ChatScreen = () => (
     <View style={{ flex: 1, width: '100%' }}>
       <ChatHeader />
@@ -129,13 +136,12 @@ export default function ChatScreen() {
     </View>
   );
 
-  //Pokazuje dany ekran w zależności od tego, czy wybrałeś już czat, czy jeszcze jesteś na liście wszystkich użytkowników
   return <View style={styles.container}>{selectedUser ? <ChatScreen /> : <UserList />}</View>;
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000', padding: 20 },
-  header: { color: 'white', paddingTop: 40, fontSize: 26, paddingBottom: 30,alignSelf:'center' },
+  header: { color: 'white', paddingTop: 40, fontSize: 26, paddingBottom: 30, alignSelf: 'center' },
   headerContainer: { flexDirection: 'row', alignItems: 'center', paddingVertical: 20 },
   chatHeaderText: { color: 'white', fontSize: 23, textAlign: 'center', flex: 1 },
   backButton: { padding: 10 },
@@ -153,4 +159,5 @@ const styles = StyleSheet.create({
   inputContainer: { flexDirection: 'row', alignItems: 'center', padding: 10, backgroundColor: 'white', borderRadius: 17 },
   input: { flex: 1, backgroundColor: 'white', color: 'black', padding: 10, fontSize: 17 },
   sendButton: { padding: 10 },
+
 });

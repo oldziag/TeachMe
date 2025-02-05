@@ -61,6 +61,13 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="(Teacher-Student)"
+          options={{
+            headerShown: false,
+            animation: 'fade'
+          }}
+        />
+        <Stack.Screen
           name="index"
           options={{
             headerShown: false,

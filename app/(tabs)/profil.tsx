@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform, Pressable, Keyboard, FlatList,
   TextInput
 } from 'react-native';
+import {router} from 'expo-router';
 import { useGlobalContext } from "#/context/GlobalProvider";
 import { signOut, getAds,updateAd, deleteAd, setAvatar, getCurrentUser } from '#/lib/appwrite';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -11,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const Profile = () => {
 
-  const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' | 'ogloszenia'|'AdView'>('profil');
+  const [currentScreen, setCurrentScreen] = useState<'profil' | 'dane' |'kalendarz'| 'ogloszenia'|'AdView'>('profil');
   const { user, setUser, setIsLogged } = useGlobalContext();
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [selectedAd, setSelectedAd] = useState<any | null>(null);
@@ -130,7 +131,7 @@ const Profile = () => {
           <ProfileButton label="Twoje dane" onPress={() => setCurrentScreen('dane')} />
           <ProfileButton label="Twoje ogłoszenia" onPress={() => setCurrentScreen('ogloszenia')} />
           <ProfileButton label="Uczniowie i korepetytorzy" />
-          <ProfileButton label="Skontaktuj się z nami" />
+          <ProfileButton label="Kalendarz zajęć" onPress={() => router.replace("../calendar")} />
         </View>
         <TouchableOpacity style={styles.logout} onPress={logout}>
           <Text style={styles.text}>Wyloguj się</Text>
@@ -154,6 +155,23 @@ const Profile = () => {
 
         <ProfileButton label="Wróć do profilu" onPress={() => setCurrentScreen('profil')} />
       </View>
+    );
+  }
+  if (currentScreen === 'kalendarz') {
+    return (
+      <ScreenContainer>
+        <Ionicons
+            name='arrow-undo'
+            onPress={() => setCurrentScreen('profil')}
+            style={{
+              color: '#1c9e92',
+              fontSize: 40,
+              fontWeight: '600',
+              left: 15,
+            }} />
+          
+        <Text>ELo</Text>
+      </ScreenContainer>
     );
   }
 
