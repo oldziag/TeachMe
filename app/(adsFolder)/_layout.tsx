@@ -26,10 +26,10 @@ const AdsLayout = () => {
         animation: 'fade'
       }}/>
       <Stack.Screen
-      name='adContact'
-      options={{
-        headerShown:false,
-        animation: 'fade'
+        name='adContact'
+        options={{
+          headerShown:false,
+          animation: 'fade'
       }}/>
     </Stack>
     <StatusBar backgroundColor='white'/>

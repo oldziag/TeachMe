@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { getAds, getUsername, getAvatar } from '#/lib/appwrite'; 
+import ButtonComponent from '@/components/Buttons';
 
 const chosenAd = () => {
   const [adDetails, setAdDetails] = useState<any>(null);
@@ -54,14 +54,10 @@ const chosenAd = () => {
     <ScrollView>
       <View style={{ flex: 1, backgroundColor: 'black' }}>
         <View style={styles.adCard2}>
-          <Ionicons
-            name="arrow-undo"
-            style={{
-              color: '#1c9e92',
-              fontSize: 40,
-              fontWeight: '600',
-              left: 15,
-            }}
+          <ButtonComponent
+              theme='back'
+              label='powrót'
+        
             onPress={() => {
               router.push({
                 pathname: '../ads',

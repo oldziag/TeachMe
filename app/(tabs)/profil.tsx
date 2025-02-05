@@ -112,6 +112,7 @@ const Profile = () => {
     setUser(getCurrentUser());
   }
 
+  
   if (currentScreen === 'profil') {
     return (
       <View style={[styles.background, { alignItems: "center" }]}>
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 30,
+    paddingTop: 60,
   },
   image: {
     width: 90,

@@ -132,8 +132,7 @@ export default function CalendarScreen() {
               left: 15,
             }}
             onPress={() => {
-                    router.push({
-                    pathname: '../messageList', });}}
+              router.back();}}
         />
         
         <Calendar

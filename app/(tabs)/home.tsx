@@ -1,10 +1,8 @@
 import { View, StyleSheet, Text, Pressable, ScrollView, Image } from 'react-native';
 import React from 'react';
-import ButtonComponent from '@/components/Buttons';
 import { router } from 'expo-router';
 import SearchBox from '@/components/SearchBox';
-import IconSymbol from '@/components/ui/IconSymbol';
-import { Ionicons } from '@expo/vector-icons'; 
+
 
 export default function Home() {
     return (
@@ -38,12 +36,21 @@ export default function Home() {
     
         
       <View style={{marginTop:20 ,width:'100%',paddingHorizontal:30}}>
-        <Text style={styles.hasla}>Szukasz pomocy w nauce? Odkryj tysiące<Text style={{color:'#1c9e92', fontWeight:'bold'}}> ogłoszeń</Text>  w jednym miejscu</Text> 
-        <Image  style={styles.images}source={require('#/assets/images/wyszukiwarka.png')}></Image>
-        <Text style={{...styles.hasla, textAlign:'right'}}>Podnieś swoje wyniki! <Text style={{color:'#1c9e92', fontWeight:'bold'}}>Korepetycje</Text> dopasowane do Twoich potrzeb</Text>
-        <Image  style={{...styles.images, width:250, alignSelf:'flex-end'}}source={require('#/assets/images/korki.png')}></Image>
-        <Text style={styles.hasla}>Dopasowane korepetycje dla każdego – niezależnie od poziomu twoich <Text style={{color:'#1c9e92', fontWeight:'bold'}}>umiejętności!</Text></Text>
-        <Image  style={{...styles.images, width:250, alignSelf:'flex-start'}}source={require('#/assets/images/level.png')}></Image>
+        <Text style={styles.hasla}>
+          Szukasz pomocy w nauce? Odkryj tysiące<Text style={{color:'#1c9e92', fontWeight:'bold'}}> ogłoszeń</Text>  w jednym miejscu</Text> 
+        <Image  style={styles.images}
+        source={require('#/assets/images/wyszukiwarka.png')}></Image>
+
+        <Text style={{...styles.hasla, textAlign:'right'}}>
+          Podnieś swoje wyniki! <Text style={{color:'#1c9e92', fontWeight:'bold'}}>Korepetycje</Text> dopasowane do Twoich potrzeb</Text>
+        <Image  style={{...styles.images, width:250, alignSelf:'flex-end'}}
+        source={require('#/assets/images/korki.png')}></Image>
+
+        <Text style={styles.hasla}>
+          Dopasowane korepetycje dla każdego – niezależnie od poziomu twoich <Text style={{color:'#1c9e92', fontWeight:'bold'}}>umiejętności!</Text></Text>
+        <Image  style={{...styles.images, width:250, alignSelf:'flex-start'}}
+        source={require('#/assets/images/level.png')}></Image>
+        
         <Text style={{...styles.hasla, fontSize:27, textAlign:'center', marginTop:40}}>Chcesz dzielić się wiedzą z innymi? Napisz ogłoszenie <Text style={{color:'#1c9e92', fontWeight:'bold'}}>już teraz!</Text></Text>
       </View>
     </View>

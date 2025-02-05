@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
+import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, Alert} from 'react-native';
 import { useState, useEffect } from 'react';
 import { getMessages, getUsers, getUsername, getAvatar, Message,getRelationships } from 'lib/appwrite'; 
 import { useGlobalContext } from "#/context/GlobalProvider";
@@ -18,6 +18,7 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<any[]>([]);
   const [messageText, setMessageText] = useState<string>('');
   const [choice, setChoice] = useState<'teachers' | 'students' | 'pending' | null>(null); 
+  
   interface Relationship {
     studentID: string;
     teacherID: string;
@@ -25,12 +26,13 @@ export default function ChatScreen() {
   const [relationships, setRelationships] = useState<Relationship[]>([]);  
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
+
         const usersData = await getUsers();
         const usersList = await Promise.all(
           usersData
-            .filter((u: any) => u.userId !== user.userId) 
+            .filter((u: any) => u.userId !== user.userId)
             .map(async (u: any) => ({
               userId: u.userId,
               username: await getUsername(u.userId),
@@ -38,37 +40,29 @@ export default function ChatScreen() {
             }))
         );
         setUsers(usersList);
-      } catch (error) {
-        console.error("Błąd pobierania użytkowników:", error);
-      }
-    };
-  
-    fetchUsers();
-  }, []);
-  
 
 
-
-  useEffect(() => {
-    const fetchRelationships = async () => {
-      try {
-        const relationshipsData = await getRelationships(); 
-        
+        const relationshipsData = await getRelationships();
         const typedRelationships = relationshipsData.map((doc: any) => ({
           studentID: doc.studentID,
           teacherID: doc.teacherID
         }));
-        
-        setRelationships(typedRelationships); 
+        setRelationships(typedRelationships);
+        if (selectedUser) {
+          const msgs = await getMessages(user.userId, selectedUser.userId);
+          setMessages(msgs);
+        }
       } catch (error) {
-        console.error("Błąd pobierania relacji:", error);
+        console.error("Błąd podczas pobierania danych", error);
       }
     };
   
-    fetchRelationships();
-  }, []);
-
-
+    fetchData();
+    
+  }, [selectedUser]); 
+  
+  
+  
   const filterUsersByRole = () => {
     if (choice === 'teachers') {
       return users.filter(user =>
@@ -86,25 +80,6 @@ export default function ChatScreen() {
       );
     } 
   };
-  
-
- 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (!selectedUser) {
-        return;
-      }
-      try {
-        const msgs = await getMessages(user.userId, selectedUser.userId);
-        setMessages(msgs);
-      } catch (error) {
-      
-      }
-    };
-    fetchMessages();
-  }, [selectedUser]);
-  
-  
 
 
   const sendMessage = async () => {
@@ -117,7 +92,63 @@ export default function ChatScreen() {
     }
   };
 
- 
+
+  const ChatHeader = () => (
+    <View style={styles.headerContainer}>
+      <TouchableOpacity onPress={() => setSelectedUser(null)} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
+      <Text style={styles.chatHeaderText}>{selectedUser?.username}</Text>
+
+
+      {choice=='students' &&
+          <Text style={{ fontSize: 20, color: 'white', fontWeight: 500 }} 
+            onPress={() => router.replace("../calendar")} >
+            <Text style={{marginLeft:10, bottom:3}}>Zajęcia </Text>
+          <Ionicons name="calendar" color={'#1c9e92'} size={20} />
+          </Text>}
+      
+      {choice === 'pending' && 
+          <Ionicons name="add-circle" color={'#1c9e92'} size={20} 
+
+          />}
+    </View>
+  );
+
+
+  const MessageItem = ({ item }: { item: any }) => {
+    const isSent = item.senderId === user.userId;
+    const sender = users.find((u) => u.userId === item.senderId);
+    return (
+      
+      <View style={[styles.messageContainer, isSent ? styles.sentContainer : styles.receivedContainer]}>
+        {!isSent && sender && <Image source={{ uri: sender.avatar }} style={styles.avatarMessage} />}
+        <View style={[styles.message, isSent ? styles.sent : styles.received]}>
+          <Text style={styles.messageText}>{item.message}</Text>
+        </View>
+        {isSent && sender && <Image source={{ uri: sender.avatar }} style={styles.avatarMessage} />}
+      </View>
+    );
+  };
+
+
+  const Choice = () => (
+    <View style={{ alignItems: 'center', justifyContent: 'center', height: '100%', flex: 1 }}>
+      <Text style={{ color: '#1c9e92', fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>
+        Wiadomości
+      </Text>
+      <View style={styles.choicecontainer}>
+        <Text style={styles.choice} onPress={() => setChoice('teachers')}>Twoi nauczyciele</Text>
+      </View>
+      <View style={styles.choicecontainer}>
+        <Text style={styles.choice} onPress={() => setChoice('students')}>Twoi uczniowie</Text>
+      </View>
+      <View style={styles.choicecontainer}>
+        <Text style={styles.choice} onPress={() => setChoice('pending')}>Oczekujące</Text>
+      </View>
+    </View>
+  );
+
   const UserList = () => (
     <View>
       <TouchableOpacity onPress={() => setChoice(null)} style={styles.backButton}>
@@ -136,38 +167,6 @@ export default function ChatScreen() {
       />
     </View>
   );
-
-
-  const ChatHeader = () => (
-    <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => setSelectedUser(null)} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={30} color="white" />
-      </TouchableOpacity>
-      <Text style={styles.chatHeaderText}>{selectedUser?.username}</Text>
-      <Text style={{ fontSize: 20, color: 'white', fontWeight: 500, margin: 5 }} onPress={() => router.replace("../calendar")}>
-        Zajęcia
-      </Text>
-      <Ionicons name="calendar" color={'#1c9e92'} size={20} />
-    </View>
-  );
-
-
-  const MessageItem = ({ item }: { item: any }) => {
-    const isSent = item.senderId === user.userId;
-    const sender = users.find((u) => u.userId === item.senderId);
-    const isStudent = selectedUser.userId === item.studentID;  
-   const isTeacher = selectedUser.userId === item.teacherID;
-    return (
-      
-      <View style={[styles.messageContainer, isSent ? styles.sentContainer : styles.receivedContainer]}>
-        {!isSent && sender && <Image source={{ uri: sender.avatar }} style={styles.avatarMessage} />}
-        <View style={[styles.message, isSent ? styles.sent : styles.received]}>
-          <Text style={styles.messageText}>{item.message}</Text>
-        </View>
-        {isSent && sender && <Image source={{ uri: sender.avatar }} style={styles.avatarMessage} />}
-      </View>
-    );
-  };
 
 
   const ChatScreen = () => (
@@ -194,22 +193,7 @@ export default function ChatScreen() {
   );
 
 
-  const Choice = () => (
-    <View style={{ alignItems: 'center', justifyContent: 'center', height: '100%', flex: 1 }}>
-      <Text style={{ color: '#1c9e92', fontSize: 32, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>
-        Wiadomości
-      </Text>
-      <View style={styles.choicecontainer}>
-        <Text style={styles.choice} onPress={() => setChoice('teachers')}>Twoi nauczyciele</Text>
-      </View>
-      <View style={styles.choicecontainer}>
-        <Text style={styles.choice} onPress={() => setChoice('students')}>Twoi uczniowie</Text>
-      </View>
-      <View style={styles.choicecontainer}>
-        <Text style={styles.choice} onPress={() => setChoice('pending')}>Oczekujące</Text>
-      </View>
-    </View>
-  );
+
 
   return <View style={styles.container}>{selectedUser ? <ChatScreen /> : choice ? <UserList /> : <Choice />}</View>;
 }
@@ -217,7 +201,7 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000', padding: 20 },
   header: { color: 'white', paddingTop: 40, fontSize: 26, paddingBottom: 30, alignSelf: 'center' },
-  headerContainer: { flexDirection: 'row', alignItems: 'center', paddingVertical: 20 },
+  headerContainer: { flexDirection: 'row', alignItems: 'center', paddingVertical: 20,paddingHorizontal:20 },
   chatHeaderText: { color: 'white', fontSize: 23, textAlign: 'center', flex: 1 },
   backButton: { padding: 10 },
   userItem: { flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: 1, borderBottomColor: '#222' },

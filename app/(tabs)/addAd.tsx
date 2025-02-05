@@ -125,7 +125,6 @@ export default function CreateAd() {
 
       <View style={{ paddingTop: 50 }}>
         <ButtonComponent theme="start" label="Dodaj" onPress={create} />
-        <ButtonComponent theme="start" label="Powrót" onPress={() => router.push('/home')} />
       </View>
     </ScrollView>
   );

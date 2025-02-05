@@ -2,15 +2,19 @@ import { StyleSheet, Text, View, FlatList, Pressable, ScrollView } from 'react-n
 import { useLocalSearchParams, router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { getAds } from '#/lib/appwrite';
-import { Ionicons } from '@expo/vector-icons';
+import ButtonComponent from '@/components/Buttons';
+
 
 const AdsScreen = () => {
   const { category: initialCategory } = useLocalSearchParams<{ category?: string }>();
   const [category, setCategory] = useState<string | undefined>(initialCategory);
+
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [selectedAd, setSelectedAd] = useState<any | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [level, setLevel] = useState<string | undefined>(undefined);
+  
+  const [loading, setLoading] = useState<boolean>(true);
+
 
   const filteredAds = announcements.filter((item) => {
     const isCategoryMatch = !category || item.category === category;
@@ -25,7 +29,6 @@ const AdsScreen = () => {
         const data = await getAds();
         setAnnouncements(data);
       } catch (error) {
-        console.error('Błąd ładowania ogłoszeń:', error);
       } finally {
         setLoading(false);
       }
@@ -38,28 +41,29 @@ const AdsScreen = () => {
     setLevel(undefined);  
   };
 
+
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-      <Ionicons
-            name="arrow-undo"
-            style={{
-              alignSelf:'flex-start',
-              color: '#1c9e92',
-              fontSize: 40,
-              fontWeight: '600',
-              left: 15,
-            }}
+      <View>    
+        <ButtonComponent
+            theme='back'
+            label='powrót'
              onPress={() => router.push({ pathname: '../home'})}
           />
+      </View>
+      <View style={styles.headerContainer}>
+  
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
           <Pressable onPress={resetLevel}>
             <View style={[styles.categoryItem, !level && styles.selectedCategory]}>
               <Text style={[styles.categoryText, !level && styles.selectedText]}>Wszystkie</Text>
             </View>
           </Pressable>
-          {['Szkoła podstawowa', 'Szkoła ponadpodstawowa', 'Szkoła policealna'].map((levelName, index) => (
+          {['Szkoła podstawowa', 
+          'Szkoła ponadpodstawowa', 
+          'Szkoła policealna'].map((levelName, index) => (
             <Pressable key={index} onPress={() => setLevel(levelName)}>
+
               <View style={[styles.categoryItem, level === levelName && styles.selectedCategory]}>
                 <Text style={[styles.categoryText, level === levelName && styles.selectedText]}>{levelName}</Text>
               </View>
@@ -67,7 +71,7 @@ const AdsScreen = () => {
           ))}
         </ScrollView>
       </View>
-
+    <View style={{alignItems:'center'}}>
       <FlatList
         data={filteredAds}
         keyExtractor={(item) => item.$id}
@@ -92,6 +96,7 @@ const AdsScreen = () => {
         }
         contentContainerStyle={styles.listContainer}
       />
+      </View>
       <View style={{padding:40}}></View>
     </View>
   );
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',
-    alignItems: 'center',
+    paddingTop:50,
   },
   headerContainer: {
     width: '100%',
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     paddingBottom: 20,
-    paddingTop: 60,
+    paddingTop: 10,
   },
   categoryScroll: {
     marginTop: 10,

@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 type ButtonProps = {
   label: string,
-  theme?: 'primary' | 'secondary' | 'tertiary' | 'napis' | 'start',
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'napis' | 'start'|'back',
   onPress?: () => void,
   children?: ReactNode,
   style?: StyleProp<ViewStyle>,
@@ -54,7 +54,15 @@ export default function Buttons({ label, theme, onPress, isLoading }: ButtonProp
       </View>
     );
   }
-
+  else if (theme === 'back') {
+    return (
+      <View style={[styles.buttonContainer, styles.secondaryButton]}>
+        <Pressable style={styles.button} onPress={handlePress}>
+          <Ionicons name="arrow-back" size={30} color="white" />
+        </Pressable>
+      </View>
+    );
+  }
   return (
     <View style={styles.buttonContainer}>
       {isLoading ? (
@@ -67,6 +75,7 @@ export default function Buttons({ label, theme, onPress, isLoading }: ButtonProp
     </View>
   )
 }
+
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -128,11 +137,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   secondaryButton: {
-    marginLeft:-50,
     width: 40,
     height: 40,
-    borderRadius: 10,
-    backgroundColor: '#fff',
+
   },
   tertiaryButton: {
     width: 200,
